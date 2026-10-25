@@ -1,8 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_text_styles.dart';
-import '../../data/dummy_data.dart';
-import '../../models/product_model.dart';
 import '../menu/menu_catalog_screen.dart';
 import '../profile/profile_screen.dart';
 import 'dart:ui';
@@ -55,19 +53,6 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tiramizuProduct = DummyData.products.firstWhere(
-      (p) => p.name.contains('Tiramizu'),
-      orElse: () => DummyData.products[4],
-    );
-    final coklatProduct = DummyData.products.firstWhere(
-      (p) => p.name.contains('Coklat'),
-      orElse: () => DummyData.products[0],
-    );
-    final matchaProduct = DummyData.products.firstWhere(
-      (p) => p.name.contains('Matcha'),
-      orElse: () => DummyData.products[3],
-    );
-
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
       body: SafeArea(
@@ -374,19 +359,16 @@ class _HomeScreenState extends State<HomeScreen> {
                     _buildBestSellerFigmaItem(
                       context,
                       imagePath: 'asset/bestseller_tiramizu.png',
-                      product: tiramizuProduct,
                     ),
                     const SizedBox(width: 40),
                     _buildBestSellerFigmaItem(
                       context,
                       imagePath: 'asset/bestseller_coklat.png',
-                      product: coklatProduct,
                     ),
                     const SizedBox(width: 40),
                     _buildBestSellerFigmaItem(
                       context,
                       imagePath: 'asset/bestseller_matcha.png',
-                      product: matchaProduct,
                     ),
                   ],
                 ),
@@ -468,7 +450,6 @@ class _HomeScreenState extends State<HomeScreen> {
   Widget _buildBestSellerFigmaItem(
     BuildContext context, {
     required String imagePath,
-    required ProductModel product,
   }) {
     return Column(
         mainAxisSize: MainAxisSize.min,

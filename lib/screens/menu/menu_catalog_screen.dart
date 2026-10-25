@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../data/dummy_data.dart';
-import '../../models/product_model.dart';
+
 
 
 class MenuCatalogScreen extends StatefulWidget {
@@ -22,7 +22,7 @@ class MenuCatalogScreen extends StatefulWidget {
 
 class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
   late final TextEditingController _searchController;
-  List<ProductModel> _filteredProducts = [];
+  List<Map<String, dynamic>> _filteredProducts = [];
 
   @override
   void initState() {
@@ -31,7 +31,7 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
     final initial = widget.initialQuery?.trim().toLowerCase() ?? '';
     _filteredProducts = initial.isEmpty
         ? List.from(DummyData.products)
-        : DummyData.products.where((p) => p.name.toLowerCase().contains(initial)).toList();
+        : DummyData.products.where((p) => (p['name'] as String).toLowerCase().contains(initial)).toList();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -49,7 +49,7 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
         _filteredProducts = List.from(DummyData.products);
       } else {
         _filteredProducts = DummyData.products
-            .where((p) => p.name.toLowerCase().contains(query))
+            .where((p) => (p['name'] as String).toLowerCase().contains(query))
             .toList();
       }
     });
@@ -180,7 +180,7 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
 
 /// Widget Kartu Item Donat Sesuai Desain Figma
 class CatalogItemCard extends StatelessWidget {
-  final ProductModel product;
+  final Map<String, dynamic> product;
   final VoidCallback? onPesan;
   final VoidCallback? onTap;
 
@@ -221,20 +221,20 @@ class CatalogItemCard extends StatelessWidget {
                 borderRadius: BorderRadius.circular(16),
               ),
               child: Center(
-                child: product.imagePath.isNotEmpty
+                child: (product['imagePath'] as String? ?? '').isNotEmpty
                     ? Image.asset(
-                        product.imagePath,
+                        product['imagePath'] as String,
                         fit: BoxFit.contain,
                         errorBuilder: (context, error, stackTrace) => Icon(
                           Icons.cake_rounded,
                           size: 58,
-                          color: _getFlavorColor(product.name),
+                          color: _getFlavorColor(product['name'] as String? ?? ''),
                         ),
                       )
                     : Icon(
                         Icons.cake_rounded,
                         size: 58,
-                        color: _getFlavorColor(product.name),
+                        color: _getFlavorColor(product['name'] as String? ?? ''),
                       ),
               ),
             ),
@@ -246,7 +246,7 @@ class CatalogItemCard extends StatelessWidget {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Text(
-                    product.name,
+                    product['name'] as String? ?? '',
                     maxLines: 1,
                     overflow: TextOverflow.ellipsis,
                     style: const TextStyle(
@@ -282,7 +282,7 @@ class CatalogItemCard extends StatelessWidget {
 
                   // Harga Produk
                   Text(
-                    'Rp ${product.price ~/ 1000}.000',
+                    'Rp ${((product['price'] as int? ?? 0) ~/ 1000)}.000',
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,

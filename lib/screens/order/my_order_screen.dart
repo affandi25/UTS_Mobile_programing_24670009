@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../data/dummy_data.dart';
-import '../../models/order_model.dart';
+
 
 class MyOrderScreen extends StatelessWidget {
   final VoidCallback? onBack;
@@ -176,10 +176,8 @@ class MyOrderScreen extends StatelessWidget {
   }
 
   // Widget Kartu Pesanan Persis Figma (#125:728: "BAWAH")
-  Widget _buildOrderCard(OrderItemModel order) {
-    final toppingText = order.toppings.isNotEmpty
-        ? order.toppings.map((t) => t.name).join(', ')
-        : 'Tanpa Topping';
+  Widget _buildOrderCard(Map<String, dynamic> order) {
+    final toppingText = order['topping'] as String? ?? 'Tanpa Topping';
 
     return Container(
       margin: const EdgeInsets.only(bottom: 16),
@@ -212,9 +210,9 @@ class MyOrderScreen extends StatelessWidget {
                 ),
                 child: ClipRRect(
                   borderRadius: BorderRadius.circular(10),
-                  child: order.product.imagePath.isNotEmpty
+                  child: (order['imagePath'] as String? ?? '').isNotEmpty
                       ? Image.asset(
-                          order.product.imagePath,
+                          order['imagePath'] as String,
                           fit: BoxFit.cover,
                           errorBuilder: (context, error, stackTrace) => const Icon(
                             Icons.cake_rounded,
@@ -238,7 +236,7 @@ class MyOrderScreen extends StatelessWidget {
                   children: [
                     // Nama Varian Donat
                     Text(
-                      order.product.name,
+                      order['name'] as String? ?? '',
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 17,
@@ -250,7 +248,7 @@ class MyOrderScreen extends StatelessWidget {
 
                     // Harga Satuan & Metode Pembayaran Sesuai Figma ("RP.10.000 - Dana")
                     Text(
-                      'RP.${order.product.price ~/ 1000}.000 - Dana',
+                      'RP.${((order['price'] as int? ?? 0) ~/ 1000)}.000 - Dana',
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 13,
@@ -262,7 +260,7 @@ class MyOrderScreen extends StatelessWidget {
 
                     // Jumlah Kuantitas Sesuai Figma ("Jumlah: 2")
                     Text(
-                      'Jumlah: ${order.quantity}',
+                      'Jumlah: ${order['quantity'] ?? 1}',
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 13,
@@ -326,7 +324,7 @@ class MyOrderScreen extends StatelessWidget {
                       ),
                       const SizedBox(width: 5),
                       Text(
-                        order.status,
+                        order['status'] as String? ?? 'delivery',
                         style: const TextStyle(
                           fontFamily: 'Inter',
                           fontSize: 14,
@@ -341,7 +339,7 @@ class MyOrderScreen extends StatelessWidget {
 
               // Total Harga Pesanan
               Text(
-                'Total : Rp ${order.totalPrice ~/ 1000}.000',
+                'Total : Rp ${((order['totalPrice'] as int? ?? 0) ~/ 1000)}.000',
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 15,
