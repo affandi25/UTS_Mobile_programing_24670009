@@ -8,11 +8,13 @@ import 'product_detail_screen.dart';
 class MenuCatalogScreen extends StatefulWidget {
   final bool showBackButton;
   final VoidCallback? onBack;
+  final String? initialQuery;
 
   const MenuCatalogScreen({
     super.key,
     this.showBackButton = false,
     this.onBack,
+    this.initialQuery,
   });
 
   @override
@@ -20,12 +22,19 @@ class MenuCatalogScreen extends StatefulWidget {
 }
 
 class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
-  final TextEditingController _searchController = TextEditingController();
+  late final TextEditingController _searchController;
   List<ProductModel> _filteredProducts = DummyData.products;
 
   @override
   void initState() {
     super.initState();
+    _searchController = TextEditingController(text: widget.initialQuery ?? '');
+    if (widget.initialQuery != null && widget.initialQuery!.trim().isNotEmpty) {
+      final query = widget.initialQuery!.toLowerCase().trim();
+      _filteredProducts = DummyData.products
+          .where((p) => p.name.toLowerCase().contains(query))
+          .toList();
+    }
     _searchController.addListener(_onSearchChanged);
   }
 

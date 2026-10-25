@@ -14,6 +14,7 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
+  String _catalogSearchQuery = '';
 
   @override
   Widget build(BuildContext context) {
@@ -22,13 +23,23 @@ class _MainNavigationScreenState extends State<MainNavigationScreen> {
         onSelectTab: (index) {
           setState(() {
             _currentIndex = index;
+            if (index != 1) _catalogSearchQuery = '';
+          });
+        },
+        onSearchCatalog: (query) {
+          setState(() {
+            _catalogSearchQuery = query;
+            _currentIndex = 1;
           });
         },
       ),
       MenuCatalogScreen(
+        key: ValueKey('catalog_$_catalogSearchQuery'),
+        initialQuery: _catalogSearchQuery,
         onBack: () {
           setState(() {
             _currentIndex = 0;
+            _catalogSearchQuery = '';
           });
         },
       ),

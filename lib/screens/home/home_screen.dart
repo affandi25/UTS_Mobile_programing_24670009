@@ -11,10 +11,50 @@ import '../auth/login_screen.dart';
 import '../../widgets/promo_banner_slider.dart';
 import '../menu/product_detail_screen.dart';
 
-class HomeScreen extends StatelessWidget {
+class HomeScreen extends StatefulWidget {
   final Function(int tabIndex)? onSelectTab;
+  final Function(String query)? onSearchCatalog;
 
-  const HomeScreen({super.key, this.onSelectTab});
+  const HomeScreen({
+    super.key,
+    this.onSelectTab,
+    this.onSearchCatalog,
+  });
+
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
+
+class _HomeScreenState extends State<HomeScreen> {
+  final TextEditingController _searchController = TextEditingController();
+
+  Function(int tabIndex)? get onSelectTab => widget.onSelectTab;
+  Function(String query)? get onSearchCatalog => widget.onSearchCatalog;
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  void _handleSearch(String rawQuery) {
+    final query = rawQuery.trim();
+    if (query.isEmpty) return;
+
+    if (onSearchCatalog != null) {
+      onSearchCatalog!(query);
+    } else {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (_) => MenuCatalogScreen(
+            showBackButton: true,
+            initialQuery: query,
+          ),
+        ),
+      );
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -206,13 +246,19 @@ class HomeScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const TextField(
+                child: TextField(
+                  controller: _searchController,
+                  textInputAction: TextInputAction.search,
+                  onSubmitted: _handleSearch,
                   decoration: InputDecoration(
-                    hintText: 'Search',
-                    hintStyle: TextStyle(fontSize: 14, color: Colors.black54),
-                    suffixIcon: Icon(Icons.search_rounded, color: Colors.black54, size: 24),
+                    hintText: 'Cari varian rasa donat...',
+                    hintStyle: const TextStyle(fontSize: 14, color: Colors.black54),
+                    suffixIcon: IconButton(
+                      icon: const Icon(Icons.search_rounded, color: Colors.black54, size: 24),
+                      onPressed: () => _handleSearch(_searchController.text),
+                    ),
                     border: InputBorder.none,
-                    contentPadding: EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                    contentPadding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                   ),
                 ),
               ),
