@@ -4,8 +4,10 @@ import '../../core/app_text_styles.dart';
 import '../../models/notification_model.dart';
 import '../../models/product_model.dart';
 import '../../services/auth_service.dart';
+import '../../services/coupon_service.dart';
 import '../../services/notification_service.dart';
 import '../../services/product_service.dart';
+import '../../models/coupon_model.dart';
 import '../menu/menu_catalog_screen.dart';
 import '../auth/login_screen.dart';
 import '../../widgets/promo_banner_slider.dart';
@@ -1014,58 +1016,120 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Modal Daftar Promo & Diskon Aktif
+  // Modal Daftar Promo & Diskon Aktif Terhubung ke CouponService
   void _showPromoDialog(BuildContext context) {
     showDialog(
       context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Row(
-          children: [
-            Icon(Icons.local_offer, color: AppColors.primaryGold),
-            SizedBox(width: 8),
-            Text('Kupon Promo Aktif', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          ],
-        ),
-        content: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            _buildPromoItem('SWEET10K', '1 Paket Donat Cuma 10k!'),
-            const SizedBox(height: 8),
-            _buildPromoItem('JUMATBERKAH', 'Jumat berkah cuma 5K!'),
-            const SizedBox(height: 8),
-            _buildPromoItem('GRATISTEH', 'Beli 2 Gratis Es Teh Segar'),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Tutup', style: TextStyle(color: AppColors.primaryGold, fontWeight: FontWeight.bold)),
-          ),
-        ],
+      builder: (ctx) => AnimatedBuilder(
+        animation: CouponService.instance,
+        builder: (ctx, _) {
+          final coupons = CouponService.instance.allCoupons;
+
+          return AlertDialog(
+            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+            title: const Row(
+              children: [
+                Icon(Icons.local_offer, color: AppColors.primaryGold),
+                SizedBox(width: 8),
+                Text('Kupon Promo Aktif', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+              ],
+            ),
+            content: SizedBox(
+              width: double.maxFinite,
+              child: ListView.separated(
+                shrinkWrap: true,
+                itemCount: coupons.length,
+                separatorBuilder: (_, _) => const SizedBox(height: 10),
+                itemBuilder: (ctx, index) {
+                  final coupon = coupons[index];
+                  return _buildPromoItem(coupon);
+                },
+              ),
+            ),
+            actions: [
+              TextButton(
+                onPressed: () => Navigator.pop(ctx),
+                child: const Text('Tutup', style: TextStyle(color: AppColors.primaryGold, fontWeight: FontWeight.bold)),
+              ),
+            ],
+          );
+        },
       ),
     );
   }
 
-  Widget _buildPromoItem(String code, String desc) {
+  Widget _buildPromoItem(CouponModel coupon) {
+    final isClaimed = coupon.isClaimed;
+
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
+      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
       decoration: BoxDecoration(
-        color: AppColors.cardBg,
-        borderRadius: BorderRadius.circular(10),
-        border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.3)),
+        color: isClaimed
+            ? const Color(0xFF558B2F).withValues(alpha: 0.06)
+            : AppColors.cardBg,
+        borderRadius: BorderRadius.circular(12),
+        border: Border.all(
+          color: isClaimed
+              ? const Color(0xFF558B2F).withValues(alpha: 0.3)
+              : AppColors.primaryGold.withValues(alpha: 0.25),
+        ),
       ),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(code, style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12, color: AppColors.primaryGold)),
-              Text(desc, style: const TextStyle(fontSize: 11, color: AppColors.textDark)),
-            ],
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    Text(
+                      coupon.code,
+                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.primaryGold),
+                    ),
+                    const SizedBox(width: 6),
+                    Text(
+                      '-Rp ${coupon.discountAmount}',
+                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF558B2F)),
+                    ),
+                  ],
+                ),
+                const SizedBox(height: 2),
+                Text(
+                  coupon.description,
+                  style: const TextStyle(fontSize: 11, color: AppColors.textDark),
+                ),
+              ],
+            ),
           ),
-          const Icon(Icons.check_circle_outline, color: Color(0xFF558B2F), size: 18),
+          const SizedBox(width: 8),
+          if (isClaimed)
+            const Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Icon(Icons.check_circle_rounded, color: Color(0xFF558B2F), size: 18),
+                SizedBox(width: 4),
+                Text(
+                  'Tersimpan',
+                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF558B2F)),
+                ),
+              ],
+            )
+          else
+            ElevatedButton(
+              onPressed: () {
+                CouponService.instance.claimCoupon(coupon.code);
+              },
+              style: ElevatedButton.styleFrom(
+                backgroundColor: const Color(0xFF43B33F),
+                foregroundColor: Colors.white,
+                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                minimumSize: const Size(60, 28),
+                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                elevation: 0,
+              ),
+              child: const Text('Ambil', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
+            ),
         ],
       ),
     );

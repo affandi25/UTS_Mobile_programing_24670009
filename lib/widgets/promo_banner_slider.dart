@@ -1,6 +1,7 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../core/app_colors.dart';
+import '../services/coupon_service.dart';
 
 class PromoBannerSlider extends StatefulWidget {
   const PromoBannerSlider({super.key});
@@ -17,6 +18,7 @@ class _PromoBannerSliderState extends State<PromoBannerSlider> {
   // Visual, kemiringan, dan posisinya diekstrak langsung dari render Figma
   final List<Map<String, dynamic>> _promos = [
     {
+      'code': 'SWEET10K',
       'title': 'PROMO',
       'subtitle': '1 paket cuma 10k',
       'gradient': const LinearGradient(
@@ -27,6 +29,7 @@ class _PromoBannerSliderState extends State<PromoBannerSlider> {
       'type': 'combo', // Box coklat + gelas es teh meluap
     },
     {
+      'code': 'JUMATBERKAH',
       'title': 'PROMO',
       'subtitle': 'Jumat berkah cuma 5K',
       'gradient': const LinearGradient(
@@ -37,6 +40,7 @@ class _PromoBannerSliderState extends State<PromoBannerSlider> {
       'type': 'matcha', // Box matcha miring diagonal asli Figma
     },
     {
+      'code': 'GRATISTEH',
       'title': 'PROMO',
       'subtitle': 'Beli 2 Gratis  Es Teh',
       'gradient': const LinearGradient(
@@ -54,11 +58,16 @@ class _PromoBannerSliderState extends State<PromoBannerSlider> {
     super.dispose();
   }
 
-  void _claimPromo(String promoName) {
+  void _claimPromo(String code, String promoName) {
+    final success = CouponService.instance.claimCoupon(code);
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: const Color(0xFF43B33F),
-        content: Text('Kupon "$promoName" berhasil diambil!'),
+        backgroundColor: success ? const Color(0xFF43B33F) : AppColors.primaryGold,
+        content: Text(
+          success
+              ? 'Kupon "$code" ($promoName) berhasil diklaim & masuk dompet voucher!'
+              : 'Kupon "$code" sudah ada di dompet voucher kamu.',
+        ),
         duration: const Duration(seconds: 2),
       ),
     );
@@ -147,28 +156,47 @@ class _PromoBannerSliderState extends State<PromoBannerSlider> {
                             const Spacer(),
 
                             // Tombol Hijau "Ambil" Sesuai Figma (#EL-0ce5c2ca, #EL-1065d696: width 120, height 33, #43B33F)
-                            SizedBox(
-                              width: 116,
-                              height: 33,
-                              child: ElevatedButton(
-                                onPressed: () => _claimPromo(promo['subtitle'] as String),
-                                style: ElevatedButton.styleFrom(
-                                  backgroundColor: const Color(0xFF43B33F), // Hijau Figma
-                                  elevation: 2,
-                                  shape: RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(10),
+                            AnimatedBuilder(
+                              animation: CouponService.instance,
+                              builder: (context, _) {
+                                final code = promo['code'] as String;
+                                final isClaimed = CouponService.instance.isClaimed(code);
+
+                                return SizedBox(
+                                  width: 116,
+                                  height: 33,
+                                  child: ElevatedButton(
+                                    onPressed: () => _claimPromo(code, promo['subtitle'] as String),
+                                    style: ElevatedButton.styleFrom(
+                                      backgroundColor: isClaimed
+                                          ? const Color(0xFF2E7D32) // Hijau tua saat sudah diklaim
+                                          : const Color(0xFF43B33F), // Hijau terang Figma
+                                      elevation: 2,
+                                      shape: RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      padding: EdgeInsets.zero,
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment: MainAxisAlignment.center,
+                                      children: [
+                                        if (isClaimed) ...[
+                                          const Icon(Icons.check_rounded, size: 16, color: Colors.white),
+                                          const SizedBox(width: 4),
+                                        ],
+                                        Text(
+                                          isClaimed ? 'Tersimpan' : 'Ambil',
+                                          style: const TextStyle(
+                                            fontSize: 13,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  padding: EdgeInsets.zero,
-                                ),
-                                child: const Text(
-                                  'Ambil',
-                                  style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
-                                ),
-                              ),
+                                );
+                              },
                             ),
                           ],
                         ),

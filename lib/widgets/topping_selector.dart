@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/app_colors.dart';
+import '../core/currency_formatter.dart';
 import '../models/topping_model.dart';
 import '../data/dummy_data.dart';
 
@@ -89,7 +90,7 @@ class ToppingSelector extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          '+Rp ${topping.price}',
+                          '+${CurrencyFormatter.formatRp(topping.price)}',
                           style: const TextStyle(
                             fontSize: 12,
                             fontWeight: FontWeight.bold,

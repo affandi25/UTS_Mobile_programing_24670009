@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
+import '../../core/currency_formatter.dart';
 import '../../data/dummy_data.dart';
 import '../../models/order_model.dart';
 
@@ -7,13 +8,6 @@ class MyOrderScreen extends StatelessWidget {
   final VoidCallback? onBack;
 
   const MyOrderScreen({super.key, this.onBack});
-
-  String _formatRupiah(int number) {
-    return number.toString().replaceAllMapped(
-          RegExp(r'(\d{1,3})(?=(\d{3})+(?!\d))'),
-          (Match m) => '${m[1]}.',
-        );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -257,7 +251,7 @@ class MyOrderScreen extends StatelessWidget {
 
                     // Harga Satuan & Metode Pembayaran Sesuai Figma ("RP.10.000 - Dana")
                     Text(
-                      'RP.${_formatRupiah(order.product.price)} - Dana',
+                      'RP.${CurrencyFormatter.format(order.product.price)} - Dana',
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 13,
@@ -348,7 +342,7 @@ class MyOrderScreen extends StatelessWidget {
 
               // Total Harga Pesanan
               Text(
-                'Total : Rp ${_formatRupiah(order.totalPrice)}',
+                'Total : ${CurrencyFormatter.formatRp(order.totalPrice)}',
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 15,

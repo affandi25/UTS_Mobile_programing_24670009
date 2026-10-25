@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../core/app_colors.dart';
+import '../core/currency_formatter.dart';
 import '../models/product_model.dart';
 
 class CatalogItemCard extends StatelessWidget {
@@ -107,7 +108,7 @@ class CatalogItemCard extends StatelessWidget {
 
                   // Harga Produk
                   Text(
-                    'Rp ${product.price}',
+                    CurrencyFormatter.formatRp(product.price),
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,

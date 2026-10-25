@@ -1,7 +1,9 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
+import '../../core/currency_formatter.dart';
 import '../../models/product_model.dart';
 import '../../models/topping_model.dart';
+import '../../services/coupon_service.dart';
 import '../../widgets/topping_selector.dart';
 import '../../widgets/quantity_counter.dart';
 import '../order/payment_success_screen.dart';
@@ -36,32 +38,23 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int get _subtotal => (_itemPrice + _toppingPrice) * _quantity;
   int get _grandTotal => (_subtotal - _discount) > 0 ? (_subtotal - _discount) : 0;
 
-  void _applyVoucher() {
-    final code = _voucherController.text.trim().toUpperCase();
+  void _applyVoucher([String? explicitCode]) {
+    final code = (explicitCode ?? _voucherController.text).trim();
+    if (explicitCode != null) {
+      _voucherController.text = explicitCode;
+    }
+
+    final result = CouponService.instance.validateCoupon(code, _subtotal);
     setState(() {
-      if (code == 'SWEET10K') {
-        _discount = 10000;
-        _voucherMessage = 'Diskon kupon Rp 10.000 diterapkan!';
-      } else if (code == 'JUMATBERKAH') {
-        _discount = 5000;
-        _voucherMessage = 'Diskon Jumat Berkah Rp 5.000 diterapkan!';
-      } else if (code == 'GRATISTEH') {
-        _discount = 3000;
-        _voucherMessage = 'Diskon Es Teh Rp 3.000 diterapkan!';
-      } else if (code.isEmpty) {
-        _discount = 0;
-        _voucherMessage = '';
-      } else {
-        _discount = 0;
-        _voucherMessage = 'Kode voucher tidak valid.';
-      }
+      _discount = result.discount;
+      _voucherMessage = result.message;
     });
 
     if (_voucherMessage.isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_voucherMessage),
-          backgroundColor: _discount > 0 ? const Color(0xFF558B2F) : Colors.redAccent,
+          backgroundColor: result.isValid ? const Color(0xFF558B2F) : Colors.redAccent,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -175,7 +168,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      'Rp ${widget.product.price}',
+                      CurrencyFormatter.formatRp(widget.product.price),
                       style: const TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.bold,
@@ -321,6 +314,55 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                 ],
               ),
+
+              // Rekomendasi Kupon Tersimpan (Klaim dari Beranda)
+              AnimatedBuilder(
+                animation: CouponService.instance,
+                builder: (context, _) {
+                  final claimed = CouponService.instance.claimedCoupons;
+                  if (claimed.isEmpty) return const SizedBox.shrink();
+
+                  return Padding(
+                    padding: const EdgeInsets.only(top: 10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          'Kupon Tersimpan di Dompetmu:',
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textMuted),
+                        ),
+                        const SizedBox(height: 6),
+                        Wrap(
+                          spacing: 8,
+                          runSpacing: 4,
+                          children: claimed.map((c) {
+                            final isApplied = _voucherController.text.toUpperCase() == c.code;
+
+                            return ActionChip(
+                              avatar: Icon(
+                                isApplied ? Icons.check_circle : Icons.local_offer_outlined,
+                                size: 14,
+                                color: isApplied ? Colors.white : AppColors.primaryGold,
+                              ),
+                              label: Text('${c.code} (-Rp ${c.discountAmount})'),
+                              backgroundColor: isApplied ? const Color(0xFF558B2F) : AppColors.primaryGold.withValues(alpha: 0.1),
+                              labelStyle: TextStyle(
+                                fontSize: 11,
+                                fontWeight: FontWeight.bold,
+                                color: isApplied ? Colors.white : AppColors.primaryGold,
+                              ),
+                              side: BorderSide(
+                                color: isApplied ? const Color(0xFF558B2F) : AppColors.primaryGold.withValues(alpha: 0.3),
+                              ),
+                              onPressed: () => _applyVoucher(c.code),
+                            );
+                          }).toList(),
+                        ),
+                      ],
+                    ),
+                  );
+                },
+              ),
               const SizedBox(height: 20),
 
               // Metode Pembayaran Sesuai Figma (#72:795)
@@ -375,7 +417,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text('${widget.product.name} (x$_quantity)', style: const TextStyle(fontSize: 13, color: AppColors.textMuted)),
-                        Text('Rp ${_itemPrice * _quantity}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                        Text(CurrencyFormatter.formatRp(_itemPrice * _quantity), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
                       ],
                     ),
                     if (_selectedTopping != null) ...[
@@ -384,7 +426,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Text('Topping: ${_selectedTopping!.name} (x$_quantity)', style: const TextStyle(fontSize: 13, color: AppColors.textMuted)),
-                          Text('Rp ${_toppingPrice * _quantity}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
+                          Text(CurrencyFormatter.formatRp(_toppingPrice * _quantity), style: const TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
                         ],
                       ),
                     ],
@@ -394,7 +436,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           const Text('Diskon Voucher', style: TextStyle(fontSize: 13, color: Color(0xFF558B2F))),
-                          Text('-Rp $_discount', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF558B2F))),
+                          Text('-${CurrencyFormatter.formatRp(_discount)}', style: const TextStyle(fontSize: 13, fontWeight: FontWeight.bold, color: Color(0xFF558B2F))),
                         ],
                       ),
                     ],
@@ -407,7 +449,7 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                           style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold, color: AppColors.textDark),
                         ),
                         Text(
-                          'Rp $_grandTotal', // Persis Figma #72:742
+                          CurrencyFormatter.formatRp(_grandTotal), // Persis Figma #72:742
                           style: const TextStyle(
                             fontSize: 18,
                             fontWeight: FontWeight.bold,
