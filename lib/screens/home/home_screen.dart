@@ -2,8 +2,10 @@ import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_text_styles.dart';
 import '../../data/dummy_data.dart';
+import '../../models/notification_model.dart';
 import '../../models/product_model.dart';
 import '../../services/auth_service.dart';
+import '../../services/notification_service.dart';
 import '../menu/menu_catalog_screen.dart';
 import '../auth/login_screen.dart';
 import '../../widgets/promo_banner_slider.dart';
@@ -84,56 +86,64 @@ class HomeScreen extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      // 1. Lonceng Notifikasi dengan Badge Angka 1 Sesuai Figma (#72:325)
-                      GestureDetector(
-                        onTap: () {
-                          ScaffoldMessenger.of(context).showSnackBar(
-                            const SnackBar(
-                              backgroundColor: AppColors.primaryGold,
-                              content: Text('Notifikasi: 1 Pesanan Donat sedang dikirim (delivery)!'),
-                              duration: Duration(seconds: 2),
+                      // 1. Lonceng Notifikasi Interaktif dengan Badge Dinamis Sesuai Figma (#72:325)
+                      AnimatedBuilder(
+                        animation: NotificationService.instance,
+                        builder: (context, _) {
+                          final unreadCount = NotificationService.instance.unreadCount;
+                          return GestureDetector(
+                            onTap: () => _showNotificationSheet(context),
+                            child: Stack(
+                              clipBehavior: Clip.none,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.all(8),
+                                  decoration: const BoxDecoration(
+                                    color: Colors.white,
+                                    shape: BoxShape.circle,
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Color(0x10000000),
+                                        blurRadius: 6,
+                                        offset: Offset(0, 2),
+                                      ),
+                                    ],
+                                  ),
+                                  child: const Icon(
+                                    Icons.notifications_none_rounded,
+                                    color: AppColors.textDark,
+                                    size: 20,
+                                  ),
+                                ),
+                                if (unreadCount > 0)
+                                  Positioned(
+                                    top: -2,
+                                    right: -2,
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
+                                      decoration: BoxDecoration(
+                                        color: Colors.redAccent,
+                                        borderRadius: BorderRadius.circular(10),
+                                        border: Border.all(color: Colors.white, width: 1.5),
+                                      ),
+                                      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
+                                      child: Center(
+                                        child: Text(
+                                          unreadCount > 9 ? '9+' : '$unreadCount',
+                                          style: const TextStyle(
+                                            fontSize: 9,
+                                            fontWeight: FontWeight.bold,
+                                            color: Colors.white,
+                                            height: 1,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                              ],
                             ),
                           );
                         },
-                        child: Stack(
-                          clipBehavior: Clip.none,
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(8),
-                              decoration: const BoxDecoration(
-                                color: Colors.white,
-                                shape: BoxShape.circle,
-                                boxShadow: [
-                                  BoxShadow(
-                                    color: Color(0x10000000),
-                                    blurRadius: 6,
-                                    offset: Offset(0, 2),
-                                  ),
-                                ],
-                              ),
-                              child: const Icon(Icons.notifications_none_rounded, color: AppColors.textDark, size: 20),
-                            ),
-                            Positioned(
-                              top: -2,
-                              right: -2,
-                              child: Container(
-                                padding: const EdgeInsets.all(4),
-                                decoration: const BoxDecoration(
-                                  color: AppColors.yellowAccent,
-                                  shape: BoxShape.circle,
-                                ),
-                                child: const Text(
-                                  '1',
-                                  style: TextStyle(
-                                    fontSize: 10,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.textDark,
-                                  ),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
                       ),
                       const SizedBox(width: 8),
 
@@ -498,6 +508,240 @@ class HomeScreen extends StatelessWidget {
             ),
           ),
         ],
+      ),
+    );
+  }
+
+  // Modal Lembar Notifikasi Interaktif Sesuai Figma (#72:325)
+  void _showNotificationSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled: true,
+      backgroundColor: Colors.transparent,
+      builder: (ctx) => AnimatedBuilder(
+        animation: NotificationService.instance,
+        builder: (ctx, _) {
+          final notifications = NotificationService.instance.notifications;
+          final unreadCount = NotificationService.instance.unreadCount;
+
+          return Container(
+            constraints: BoxConstraints(
+              maxHeight: MediaQuery.of(context).size.height * 0.75,
+            ),
+            decoration: const BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
+            ),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                const SizedBox(height: 12),
+                // Drag Handle Bar
+                Container(
+                  width: 40,
+                  height: 4,
+                  decoration: BoxDecoration(
+                    color: Colors.black12,
+                    borderRadius: BorderRadius.circular(2),
+                  ),
+                ),
+                const SizedBox(height: 16),
+                // Header: Judul & Tombol Tandai Semua Dibaca
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Row(
+                        children: [
+                          const Text(
+                            'Notifikasi',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                              color: AppColors.textDark,
+                            ),
+                          ),
+                          if (unreadCount > 0) ...[
+                            const SizedBox(width: 8),
+                            Container(
+                              padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 2),
+                              decoration: BoxDecoration(
+                                color: Colors.redAccent.withValues(alpha: 0.12),
+                                borderRadius: BorderRadius.circular(12),
+                              ),
+                              child: Text(
+                                '$unreadCount Baru',
+                                style: const TextStyle(
+                                  fontSize: 11,
+                                  fontWeight: FontWeight.bold,
+                                  color: Colors.redAccent,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ],
+                      ),
+                      if (unreadCount > 0)
+                        TextButton(
+                          onPressed: () {
+                            NotificationService.instance.markAllAsRead();
+                          },
+                          style: TextButton.styleFrom(
+                            padding: EdgeInsets.zero,
+                            visualDensity: VisualDensity.compact,
+                          ),
+                          child: const Text(
+                            'Tandai Dibaca',
+                            style: TextStyle(
+                              fontSize: 12,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.primaryGold,
+                            ),
+                          ),
+                        ),
+                    ],
+                  ),
+                ),
+                const Divider(height: 20),
+                // List Notifikasi
+                Flexible(
+                  child: notifications.isEmpty
+                      ? const Padding(
+                          padding: EdgeInsets.symmetric(vertical: 40),
+                          child: Center(
+                            child: Text(
+                              'Belum ada notifikasi baru',
+                              style: TextStyle(color: Colors.black45),
+                            ),
+                          ),
+                        )
+                      : ListView.separated(
+                          padding: const EdgeInsets.fromLTRB(20, 4, 20, 24),
+                          itemCount: notifications.length,
+                          separatorBuilder: (_, _) => const SizedBox(height: 10),
+                          itemBuilder: (ctx, index) {
+                            final notif = notifications[index];
+                            final isOrder = notif.type == NotificationType.order;
+
+                            return Container(
+                              padding: const EdgeInsets.all(12),
+                              decoration: BoxDecoration(
+                                color: notif.isRead
+                                    ? const Color(0xFFFAFAFA)
+                                    : AppColors.primaryGold.withValues(alpha: 0.05),
+                                borderRadius: BorderRadius.circular(14),
+                                border: Border.all(
+                                  color: notif.isRead
+                                      ? Colors.black.withValues(alpha: 0.06)
+                                      : AppColors.primaryGold.withValues(alpha: 0.25),
+                                ),
+                              ),
+                              child: Row(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  // Ikon Jenis Notifikasi
+                                  Container(
+                                    width: 38,
+                                    height: 38,
+                                    decoration: BoxDecoration(
+                                      color: isOrder
+                                          ? const Color(0xFF558B2F).withValues(alpha: 0.12)
+                                          : AppColors.primaryGold.withValues(alpha: 0.12),
+                                      shape: BoxShape.circle,
+                                    ),
+                                    child: Icon(
+                                      isOrder
+                                          ? Icons.delivery_dining_rounded
+                                          : Icons.local_offer_rounded,
+                                      color: isOrder ? const Color(0xFF558B2F) : AppColors.primaryGold,
+                                      size: 20,
+                                    ),
+                                  ),
+                                  const SizedBox(width: 12),
+                                  // Konten Notifikasi
+                                  Expanded(
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: [
+                                            Expanded(
+                                              child: Text(
+                                                notif.title,
+                                                style: TextStyle(
+                                                  fontSize: 13,
+                                                  fontWeight: notif.isRead ? FontWeight.w600 : FontWeight.bold,
+                                                  color: AppColors.textDark,
+                                                ),
+                                              ),
+                                            ),
+                                            Text(
+                                              NotificationService.instance.formatRelativeTime(notif.timestamp),
+                                              style: const TextStyle(fontSize: 10, color: Colors.black45),
+                                            ),
+                                          ],
+                                        ),
+                                        const SizedBox(height: 4),
+                                        Text(
+                                          notif.message,
+                                          style: TextStyle(
+                                            fontSize: 12,
+                                            color: notif.isRead ? Colors.black54 : AppColors.textDark,
+                                            height: 1.3,
+                                          ),
+                                        ),
+                                        if (isOrder) ...[
+                                          const SizedBox(height: 8),
+                                          Align(
+                                            alignment: Alignment.centerRight,
+                                            child: InkWell(
+                                              onTap: () {
+                                                NotificationService.instance.markAsRead(notif.id);
+                                                Navigator.pop(ctx);
+                                                if (onSelectTab != null) {
+                                                  onSelectTab!(2); // Pindah ke tab My Order
+                                                }
+                                              },
+                                              child: Container(
+                                                padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFF558B2F),
+                                                  borderRadius: BorderRadius.circular(8),
+                                                ),
+                                                child: const Row(
+                                                  mainAxisSize: MainAxisSize.min,
+                                                  children: [
+                                                    Text(
+                                                      'Lihat Pesanan',
+                                                      style: TextStyle(
+                                                        fontSize: 11,
+                                                        color: Colors.white,
+                                                        fontWeight: FontWeight.bold,
+                                                      ),
+                                                    ),
+                                                    SizedBox(width: 4),
+                                                    Icon(Icons.arrow_forward_ios, size: 10, color: Colors.white),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          },
+                        ),
+                ),
+              ],
+            ),
+          );
+        },
       ),
     );
   }
