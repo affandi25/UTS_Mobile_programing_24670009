@@ -8,6 +8,7 @@ import '../../services/notification_service.dart';
 import '../../services/product_service.dart';
 import '../../models/coupon_model.dart';
 import 'widgets/notification_sheet.dart';
+import 'widgets/chat_sheet.dart';
 import '../menu/menu_catalog_screen.dart';
 import '../profile/profile_screen.dart';
 import '../../widgets/promo_banner_slider.dart';
@@ -182,7 +183,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       // 2. Ikon Chat / Bantuan Sesuai Figma (#72:314 & #130:1069)
                       GestureDetector(
-                        onTap: () => _showChatSheet(context),
+                        onTap: () => ChatSheet.show(context),
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: const BoxDecoration(
@@ -564,101 +565,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
-  // Modal Chat Bantuan Sesuai Prototype Figma (iPhone 16 Pro - 12 / 14)
-  void _showChatSheet(BuildContext context) {
-    final TextEditingController messageController = TextEditingController();
-
-    showModalBottomSheet(
-      context: context,
-      isScrollControlled: true,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) {
-        return Padding(
-          padding: EdgeInsets.only(
-            bottom: MediaQuery.of(ctx).viewInsets.bottom,
-            top: 16,
-            left: 20,
-            right: 20,
-          ),
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  const Text(
-                    'Bantuan & Chat',
-                    style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textDark),
-                  ),
-                  IconButton(
-                    icon: const Icon(Icons.close),
-                    onPressed: () => Navigator.pop(ctx),
-                  ),
-                ],
-              ),
-              const Divider(),
-              const SizedBox(height: 12),
-              // Bubble chat sapaan
-              Align(
-                alignment: Alignment.centerLeft,
-                child: Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    color: AppColors.cardBg,
-                    borderRadius: BorderRadius.circular(16),
-                  ),
-                  child: const Text(
-                    'Halo Yusuf! Ada yang bisa kami bantu terkait pesanan donatmu?',
-                    style: TextStyle(fontSize: 13, color: AppColors.textDark),
-                  ),
-                ),
-              ),
-              const SizedBox(height: 20),
-              // Input bar "Kirim Pesan...." Sesuai Figma
-              Row(
-                children: [
-                  Expanded(
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(horizontal: 14),
-                      decoration: BoxDecoration(
-                        color: AppColors.grayInput.withValues(alpha: 0.6),
-                        borderRadius: BorderRadius.circular(16),
-                      ),
-                      child: TextField(
-                        controller: messageController,
-                        decoration: const InputDecoration(
-                          hintText: 'Kirim Pesan....',
-                          hintStyle: TextStyle(fontSize: 13, color: Colors.black45),
-                          border: InputBorder.none,
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(width: 8),
-                  IconButton(
-                    icon: const Icon(Icons.send_rounded, color: AppColors.primaryGold),
-                    onPressed: () {
-                      if (messageController.text.trim().isNotEmpty) {
-                        Navigator.pop(ctx);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          const SnackBar(content: Text('Pesan terkirim ke Customer Support!')),
-                        );
-                      }
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(height: 16),
-            ],
-          ),
-        );
-      },
-    );
-  }
 
   // Modal Info Lokasi Outlet SweetBite
   void _showLocationDialog(BuildContext context) {
