@@ -3,8 +3,7 @@ import '../../core/app_colors.dart';
 import '../../core/currency_formatter.dart';
 import '../../models/product_model.dart';
 import '../../models/topping_model.dart';
-import '../../widgets/topping_selector.dart';
-import '../../widgets/quantity_counter.dart';
+import '../../data/dummy_data.dart';
 import '../order/payment_success_screen.dart';
 
 // Layar Detail Produk & Konfirmasi Pesanan Sesuai Figma (iPhone 16 Plus - 11 s/d 18)
@@ -459,3 +458,220 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
     );
   }
 }
+
+/// Widget Pemilih Topping Sesuai Komponen Figma "gabung" (#123:443)
+class ToppingSelector extends StatelessWidget {
+  final ToppingModel? selectedTopping;
+  final ValueChanged<ToppingModel?> onToppingSelected;
+  final List<ToppingModel> availableToppings;
+
+  const ToppingSelector({
+    super.key,
+    required this.selectedTopping,
+    required this.onToppingSelected,
+    this.availableToppings = DummyData.toppings,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        const Text(
+          'Pilih Topping',
+          style: TextStyle(
+            fontSize: 14,
+            fontWeight: FontWeight.bold,
+            color: AppColors.textDark,
+          ),
+        ),
+        const SizedBox(height: 8),
+        Container(
+          width: double.infinity,
+          height: 50,
+          padding: const EdgeInsets.symmetric(horizontal: 16),
+          decoration: BoxDecoration(
+            color: Colors.white,
+            borderRadius: BorderRadius.circular(12),
+            border: Border.all(
+              color: selectedTopping != null
+                  ? AppColors.primaryGold
+                  : AppColors.grayInput.withValues(alpha: 0.8),
+              width: 1.5,
+            ),
+            boxShadow: const [
+              BoxShadow(
+                color: Color(0x0A000000),
+                blurRadius: 6,
+                offset: Offset(0, 2),
+              ),
+            ],
+          ),
+          child: DropdownButtonHideUnderline(
+            child: DropdownButton<ToppingModel?>(
+              value: selectedTopping,
+              isExpanded: true,
+              hint: const Text(
+                'Tambah Toping', // Persis teks Figma #123:402
+                style: TextStyle(
+                  fontSize: 14,
+                  fontWeight: FontWeight.w500,
+                  color: Colors.black54,
+                ),
+              ),
+              icon: const Icon(Icons.keyboard_arrow_down_rounded, color: AppColors.primaryGold),
+              items: [
+                const DropdownMenuItem<ToppingModel?>(
+                  value: null,
+                  child: Text(
+                    'Tanpa Topping (Original)',
+                    style: TextStyle(fontSize: 14, color: AppColors.textMuted),
+                  ),
+                ),
+                ...availableToppings.map(
+                  (topping) => DropdownMenuItem<ToppingModel?>(
+                    value: topping,
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          topping.name,
+                          style: const TextStyle(
+                            fontSize: 14,
+                            fontWeight: FontWeight.w600,
+                            color: AppColors.textDark,
+                          ),
+                        ),
+                        Text(
+                          '+${CurrencyFormatter.formatRp(topping.price)}',
+                          style: const TextStyle(
+                            fontSize: 12,
+                            fontWeight: FontWeight.bold,
+                            color: AppColors.primaryGold,
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ],
+              onChanged: onToppingSelected,
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+}
+
+/// Widget Counter Kuantitas Sesuai Komponen Figma "Component 2" (#125:598)
+class QuantityCounter extends StatelessWidget {
+  final int quantity;
+  final ValueChanged<int> onQuantityChanged;
+  final int minQuantity;
+  final int maxQuantity;
+
+  const QuantityCounter({
+    super.key,
+    required this.quantity,
+    required this.onQuantityChanged,
+    this.minQuantity = 1,
+    this.maxQuantity = 20,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 6),
+      decoration: BoxDecoration(
+        color: Colors.white,
+        borderRadius: BorderRadius.circular(24),
+        border: Border.all(
+          color: AppColors.grayInput.withValues(alpha: 0.8),
+          width: 1.2,
+        ),
+        boxShadow: const [
+          BoxShadow(
+            color: Color(0x0A000000),
+            blurRadius: 6,
+            offset: Offset(0, 2),
+          ),
+        ],
+      ),
+      child: Row(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Tombol Minus (-) Sesuai Figma Group 38 (#I125:604;125:573)
+          InkWell(
+            onTap: quantity > minQuantity
+                ? () => onQuantityChanged(quantity - 1)
+                : null,
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: quantity > minQuantity
+                    ? AppColors.primaryGold.withValues(alpha: 0.15)
+                    : Colors.grey.shade100,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.remove,
+                  size: 18,
+                  color: quantity > minQuantity
+                      ? AppColors.primaryGold
+                      : Colors.grey.shade400,
+                ),
+              ),
+            ),
+          ),
+
+          // Angka Kuantitas Sesuai Figma (#I125:604;125:577)
+          Container(
+            constraints: const BoxConstraints(minWidth: 36),
+            alignment: Alignment.center,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Text(
+              '$quantity',
+              style: const TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.bold,
+                color: AppColors.textDark,
+              ),
+            ),
+          ),
+
+          // Tombol Plus (+) Sesuai Figma Group 39 (#I125:604;125:574)
+          InkWell(
+            onTap: quantity < maxQuantity
+                ? () => onQuantityChanged(quantity + 1)
+                : null,
+            borderRadius: BorderRadius.circular(16),
+            child: Container(
+              width: 32,
+              height: 32,
+              decoration: BoxDecoration(
+                color: quantity < maxQuantity
+                    ? AppColors.primaryGold
+                    : Colors.grey.shade100,
+                shape: BoxShape.circle,
+              ),
+              child: Center(
+                child: Icon(
+                  Icons.add,
+                  size: 18,
+                  color: quantity < maxQuantity
+                      ? Colors.white
+                      : Colors.grey.shade400,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
+
