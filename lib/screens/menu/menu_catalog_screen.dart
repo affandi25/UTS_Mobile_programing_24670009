@@ -3,7 +3,7 @@ import '../../core/app_colors.dart';
 import '../../core/currency_formatter.dart';
 import '../../data/dummy_data.dart';
 import '../../models/product_model.dart';
-import 'product_detail_screen.dart';
+
 
 class MenuCatalogScreen extends StatefulWidget {
   final bool showBackButton;
@@ -169,22 +169,6 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
                         final product = _filteredProducts[index];
                         return CatalogItemCard(
                           product: product,
-                          onTap: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => ProductDetailScreen(product: product),
-                              ),
-                            );
-                          },
-                          onPesan: () {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (_) => ProductDetailScreen(product: product),
-                              ),
-                            );
-                          },
                         );
                       },
                     ),

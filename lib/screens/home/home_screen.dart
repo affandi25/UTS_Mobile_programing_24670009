@@ -6,7 +6,7 @@ import '../../models/product_model.dart';
 import '../menu/menu_catalog_screen.dart';
 import '../profile/profile_screen.dart';
 import 'dart:ui';
-import '../menu/product_detail_screen.dart';
+
 
 class HomeScreen extends StatefulWidget {
   final Function(int tabIndex)? onSelectTab;
@@ -470,16 +470,7 @@ class _HomeScreenState extends State<HomeScreen> {
     required String imagePath,
     required ProductModel product,
   }) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => ProductDetailScreen(product: product),
-          ),
-        );
-      },
-      child: Column(
+    return Column(
         mainAxisSize: MainAxisSize.min,
         children: [
           // 1. Kotak Donat Sesuai Foto Asli Figma (96.5 x 118.2 dp, Shadow 0px 4px 4px)
@@ -547,8 +538,7 @@ class _HomeScreenState extends State<HomeScreen> {
             ),
           ),
         ],
-      ),
-    );
+      );
   }
 }
 
