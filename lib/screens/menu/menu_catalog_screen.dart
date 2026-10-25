@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
-import '../../data/dummy_data.dart';
+import '../../services/product_service.dart';
 import '../../models/product_model.dart';
 import '../../widgets/catalog_item_card.dart';
 import 'product_detail_screen.dart';
@@ -23,18 +23,13 @@ class MenuCatalogScreen extends StatefulWidget {
 
 class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
   late final TextEditingController _searchController;
-  List<ProductModel> _filteredProducts = DummyData.products;
+  List<ProductModel> _filteredProducts = [];
 
   @override
   void initState() {
     super.initState();
     _searchController = TextEditingController(text: widget.initialQuery ?? '');
-    if (widget.initialQuery != null && widget.initialQuery!.trim().isNotEmpty) {
-      final query = widget.initialQuery!.toLowerCase().trim();
-      _filteredProducts = DummyData.products
-          .where((p) => p.name.toLowerCase().contains(query))
-          .toList();
-    }
+    _filteredProducts = ProductService.instance.searchProducts(widget.initialQuery ?? '');
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -46,15 +41,8 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
   }
 
   void _onSearchChanged() {
-    final query = _searchController.text.toLowerCase().trim();
     setState(() {
-      if (query.isEmpty) {
-        _filteredProducts = DummyData.products;
-      } else {
-        _filteredProducts = DummyData.products
-            .where((p) => p.name.toLowerCase().contains(query))
-            .toList();
-      }
+      _filteredProducts = ProductService.instance.searchProducts(_searchController.text);
     });
   }
 

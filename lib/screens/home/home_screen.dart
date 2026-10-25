@@ -1,11 +1,11 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_text_styles.dart';
-import '../../data/dummy_data.dart';
 import '../../models/notification_model.dart';
 import '../../models/product_model.dart';
 import '../../services/auth_service.dart';
 import '../../services/notification_service.dart';
+import '../../services/product_service.dart';
 import '../menu/menu_catalog_screen.dart';
 import '../auth/login_screen.dart';
 import '../../widgets/promo_banner_slider.dart';
@@ -58,18 +58,9 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tiramizuProduct = DummyData.products.firstWhere(
-      (p) => p.name.contains('Tiramizu'),
-      orElse: () => DummyData.products[4],
-    );
-    final coklatProduct = DummyData.products.firstWhere(
-      (p) => p.name.contains('Coklat'),
-      orElse: () => DummyData.products[0],
-    );
-    final matchaProduct = DummyData.products.firstWhere(
-      (p) => p.name.contains('Matcha'),
-      orElse: () => DummyData.products[3],
-    );
+    final tiramizuProduct = ProductService.instance.findByNameKeyword('Tiramizu');
+    final coklatProduct = ProductService.instance.findByNameKeyword('Coklat');
+    final matchaProduct = ProductService.instance.findByNameKeyword('Matcha');
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
@@ -350,12 +341,16 @@ class _HomeScreenState extends State<HomeScreen> {
                   ),
                   GestureDetector(
                     onTap: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (_) => const MenuCatalogScreen(showBackButton: true),
-                        ),
-                      );
+                      if (onSelectTab != null) {
+                        onSelectTab!(1);
+                      } else {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (_) => const MenuCatalogScreen(showBackButton: true),
+                          ),
+                        );
+                      }
                     },
                     child: const Text(
                       'View All',
