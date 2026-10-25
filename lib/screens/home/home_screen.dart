@@ -8,8 +8,8 @@ import '../../services/notification_service.dart';
 import '../../services/product_service.dart';
 import '../../models/coupon_model.dart';
 import 'widgets/notification_sheet.dart';
+import 'widgets/settings_sheet.dart';
 import '../menu/menu_catalog_screen.dart';
-import '../auth/login_screen.dart';
 import '../../widgets/promo_banner_slider.dart';
 import '../menu/product_detail_screen.dart';
 
@@ -203,7 +203,7 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       // 3. Ikon Gear / Pengaturan Sesuai Figma (#72:307)
                       GestureDetector(
-                        onTap: () => _showSettingsSheet(context),
+                        onTap: () => SettingsSheet.show(context, onSelectTab: onSelectTab),
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: const BoxDecoration(
@@ -555,102 +555,6 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-
-
-  // Modal Menu Pengaturan Sesuai Prototype Figma (iPhone 16 Pro - 10)
-  void _showSettingsSheet(BuildContext context) {
-    showModalBottomSheet(
-      context: context,
-      backgroundColor: Colors.white,
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.vertical(top: Radius.circular(24)),
-      ),
-      builder: (ctx) {
-        return SafeArea(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 16),
-            child: Column(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Container(
-                  width: 40,
-                  height: 4,
-                  decoration: BoxDecoration(
-                    color: AppColors.grayInput,
-                    borderRadius: BorderRadius.circular(2),
-                  ),
-                ),
-                const SizedBox(height: 16),
-                const Text(
-                  'Pengaturan Akun',
-                  style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: AppColors.textDark),
-                ),
-                const SizedBox(height: 12),
-                ListTile(
-                  leading: const Icon(Icons.person_outline, color: AppColors.primaryGold),
-                  title: const Text('Edit Profil Pengguna'),
-                  subtitle: const Text('Bio, No. HP, Email'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    if (onSelectTab != null) {
-                      onSelectTab!(3);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Menu Edit Profil (Tahap 6)')),
-                      );
-                    }
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.lock_outline, color: AppColors.navyButton),
-                  title: const Text('Ubah Kata Sandi'),
-                  subtitle: const Text('Ganti sandi lama dengan sandi baru'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      const SnackBar(content: Text('Form Ubah Sandi (Tahap 6)')),
-                    );
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.receipt_long_outlined, color: Color(0xFF558B2F)),
-                  title: const Text('Pesanan Saya (My Order)'),
-                  subtitle: const Text('Status pengiriman donat'),
-                  trailing: const Icon(Icons.arrow_forward_ios, size: 14),
-                  onTap: () {
-                    Navigator.pop(ctx);
-                    if (onSelectTab != null) {
-                      onSelectTab!(2);
-                    } else {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(content: Text('Buka My Order')),
-                      );
-                    }
-                  },
-                ),
-                const Divider(),
-                ListTile(
-                  leading: const Icon(Icons.logout, color: Colors.red),
-                  title: const Text('Keluar (Logout)', style: TextStyle(color: Colors.red, fontWeight: FontWeight.bold)),
-                  onTap: () {
-                    AuthService.instance.logout();
-                    Navigator.pop(ctx);
-                    Navigator.pushAndRemoveUntil(
-                      context,
-                      MaterialPageRoute(builder: (_) => const LoginScreen()),
-                      (route) => false,
-                    );
-                  },
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   // Modal Chat Bantuan Sesuai Prototype Figma (iPhone 16 Pro - 12 / 14)
   void _showChatSheet(BuildContext context) {
