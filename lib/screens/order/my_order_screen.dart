@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
-import '../../core/currency_formatter.dart';
 import '../../data/dummy_data.dart';
 import '../../models/order_model.dart';
 
@@ -251,7 +250,7 @@ class MyOrderScreen extends StatelessWidget {
 
                     // Harga Satuan & Metode Pembayaran Sesuai Figma ("RP.10.000 - Dana")
                     Text(
-                      'RP.${CurrencyFormatter.format(order.product.price)} - Dana',
+                      'RP.${order.product.price ~/ 1000}.000 - Dana',
                       style: const TextStyle(
                         fontFamily: 'Inter',
                         fontSize: 13,
@@ -342,7 +341,7 @@ class MyOrderScreen extends StatelessWidget {
 
               // Total Harga Pesanan
               Text(
-                'Total : ${CurrencyFormatter.formatRp(order.totalPrice)}',
+                'Total : Rp ${order.totalPrice ~/ 1000}.000',
                 style: const TextStyle(
                   fontFamily: 'Inter',
                   fontSize: 15,

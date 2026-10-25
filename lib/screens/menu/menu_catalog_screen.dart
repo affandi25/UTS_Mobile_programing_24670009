@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
-import '../../core/currency_formatter.dart';
 import '../../data/dummy_data.dart';
 import '../../models/product_model.dart';
 
@@ -283,7 +282,7 @@ class CatalogItemCard extends StatelessWidget {
 
                   // Harga Produk
                   Text(
-                    CurrencyFormatter.formatRp(product.price),
+                    'Rp ${product.price ~/ 1000}.000',
                     style: const TextStyle(
                       fontSize: 15,
                       fontWeight: FontWeight.bold,
