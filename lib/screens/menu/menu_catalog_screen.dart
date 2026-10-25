@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
-import '../../services/product_service.dart';
+import '../../data/dummy_data.dart';
 import '../../models/product_model.dart';
 import '../../widgets/catalog_item_card.dart';
 import 'product_detail_screen.dart';
@@ -29,7 +29,10 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
   void initState() {
     super.initState();
     _searchController = TextEditingController(text: widget.initialQuery ?? '');
-    _filteredProducts = ProductService.instance.searchProducts(widget.initialQuery ?? '');
+    final initial = widget.initialQuery?.trim().toLowerCase() ?? '';
+    _filteredProducts = initial.isEmpty
+        ? List.from(DummyData.products)
+        : DummyData.products.where((p) => p.name.toLowerCase().contains(initial)).toList();
     _searchController.addListener(_onSearchChanged);
   }
 
@@ -41,8 +44,15 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
   }
 
   void _onSearchChanged() {
+    final query = _searchController.text.trim().toLowerCase();
     setState(() {
-      _filteredProducts = ProductService.instance.searchProducts(_searchController.text);
+      if (query.isEmpty) {
+        _filteredProducts = List.from(DummyData.products);
+      } else {
+        _filteredProducts = DummyData.products
+            .where((p) => p.name.toLowerCase().contains(query))
+            .toList();
+      }
     });
   }
 

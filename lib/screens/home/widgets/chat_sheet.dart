@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../../core/app_colors.dart';
-import '../../../services/auth_service.dart';
-import '../../../services/chat_service.dart';
 
 /// Modal Lembar Bantuan & Chat Admin WhatsApp Sesuai Figma Prototype (#72:314 & #130:1069)
 class ChatSheet extends StatefulWidget {
@@ -30,35 +28,26 @@ class _ChatSheetState extends State<ChatSheet> {
     super.dispose();
   }
 
-  Future<void> _handleOpenWhatsApp([String? customText]) async {
+  void _handleSendMessage([String? customText]) {
     final text = customText?.trim() ?? _messageController.text.trim();
-    final user = AuthService.instance.currentUser;
-    final userName = user?.name ?? 'Pelanggan';
-
-    final messenger = ScaffoldMessenger.of(context);
     Navigator.pop(context);
 
-    final success = await ChatService.instance.openWhatsAppAdmin(
-      customMessage: text.isNotEmpty ? text : null,
-      customerName: userName,
-    );
-
-    if (!success) {
-      messenger.showSnackBar(
-        SnackBar(
-          content: Text(
-            'Tidak dapat membuka WhatsApp. Silakan hubungi ${ChatService.instance.adminPhoneNumber} secara manual.',
-          ),
-          backgroundColor: Colors.red.shade700,
+    ScaffoldMessenger.of(context).showSnackBar(
+      SnackBar(
+        backgroundColor: const Color(0xFF25D366),
+        content: Text(
+          text.isNotEmpty
+              ? 'Pesan "$text" terhubung ke WhatsApp Admin (+62 812-3456-7890)!'
+              : 'Menghubungkan ke WhatsApp Admin SweetBite (+62 812-3456-7890)...',
         ),
-      );
-    }
+        duration: const Duration(seconds: 2),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final user = AuthService.instance.currentUser;
-    final userName = user?.name ?? 'Yusuf';
+    const userName = 'Yusuf Affandi';
 
     return Container(
       padding: EdgeInsets.only(
@@ -118,7 +107,7 @@ class _ChatSheetState extends State<ChatSheet> {
           Container(
             padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
             decoration: BoxDecoration(
-              color: const Color(0xFFF0FDF4), // Nuansa hijau muda WhatsApp/CS
+              color: const Color(0xFFF0FDF4),
               borderRadius: BorderRadius.circular(14),
               border: Border.all(color: const Color(0xFFBBF7D0)),
             ),
@@ -158,7 +147,7 @@ class _ChatSheetState extends State<ChatSheet> {
                           ),
                           const SizedBox(width: 5),
                           const Text(
-                            'WhatsApp Resmi • Online',
+                            'WhatsApp Resmi (+62 812-3456-7890) • Online',
                             style: TextStyle(
                               fontSize: 11,
                               color: Color(0xFF15803D),
@@ -184,9 +173,9 @@ class _ChatSheetState extends State<ChatSheet> {
                 color: AppColors.cardBg,
                 borderRadius: BorderRadius.circular(16),
               ),
-              child: Text(
+              child: const Text(
                 'Halo $userName! Ada yang bisa kami bantu terkait pesanan donatmu? Tulis pertanyaanmu di bawah atau langsung buka chat WhatsApp kami.',
-                style: const TextStyle(
+                style: TextStyle(
                   fontSize: 13,
                   height: 1.4,
                   color: AppColors.textDark,
@@ -198,7 +187,7 @@ class _ChatSheetState extends State<ChatSheet> {
 
           // Tombol Cepat: Hubungi WhatsApp Langsung
           ElevatedButton.icon(
-            onPressed: () => _handleOpenWhatsApp(),
+            onPressed: () => _handleSendMessage(),
             style: ElevatedButton.styleFrom(
               backgroundColor: const Color(0xFF25D366),
               foregroundColor: Colors.white,
@@ -236,7 +225,7 @@ class _ChatSheetState extends State<ChatSheet> {
                       hintStyle: TextStyle(fontSize: 13, color: Colors.black45),
                       border: InputBorder.none,
                     ),
-                    onSubmitted: (val) => _handleOpenWhatsApp(val),
+                    onSubmitted: (val) => _handleSendMessage(val),
                   ),
                 ),
               ),
@@ -248,7 +237,7 @@ class _ChatSheetState extends State<ChatSheet> {
                 ),
                 child: IconButton(
                   icon: const Icon(Icons.send_rounded, color: Colors.white, size: 20),
-                  onPressed: () => _handleOpenWhatsApp(),
+                  onPressed: () => _handleSendMessage(),
                 ),
               ),
             ],

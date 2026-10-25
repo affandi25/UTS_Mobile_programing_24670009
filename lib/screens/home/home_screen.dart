@@ -1,12 +1,8 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_text_styles.dart';
+import '../../data/dummy_data.dart';
 import '../../models/product_model.dart';
-import '../../services/auth_service.dart';
-import '../../services/coupon_service.dart';
-import '../../services/notification_service.dart';
-import '../../services/product_service.dart';
-import '../../models/coupon_model.dart';
 import 'widgets/notification_sheet.dart';
 import 'widgets/chat_sheet.dart';
 import '../menu/menu_catalog_screen.dart';
@@ -61,9 +57,18 @@ class _HomeScreenState extends State<HomeScreen> {
 
   @override
   Widget build(BuildContext context) {
-    final tiramizuProduct = ProductService.instance.findByNameKeyword('Tiramizu');
-    final coklatProduct = ProductService.instance.findByNameKeyword('Coklat');
-    final matchaProduct = ProductService.instance.findByNameKeyword('Matcha');
+    final tiramizuProduct = DummyData.products.firstWhere(
+      (p) => p.name.contains('Tiramizu'),
+      orElse: () => DummyData.products[4],
+    );
+    final coklatProduct = DummyData.products.firstWhere(
+      (p) => p.name.contains('Coklat'),
+      orElse: () => DummyData.products[0],
+    );
+    final matchaProduct = DummyData.products.firstWhere(
+      (p) => p.name.contains('Matcha'),
+      orElse: () => DummyData.products[3],
+    );
 
     return Scaffold(
       backgroundColor: AppColors.scaffoldBg,
@@ -78,106 +83,61 @@ class _HomeScreenState extends State<HomeScreen> {
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
-                  AnimatedBuilder(
-                    animation: AuthService.instance,
-                    builder: (context, _) {
-                      final user = AuthService.instance.currentUser;
-                      final displayName = user?.name ?? 'Yusuf Affandi';
-                      final avatarPath = user?.avatarPath ?? 'asset/yusuf.jpeg';
-
-                      return GestureDetector(
-                        onTap: () {
-                          if (onSelectTab != null) {
-                            onSelectTab!(3); // Pindah ke tab Profil
-                          }
-                        },
-                        child: Row(
+                  GestureDetector(
+                    onTap: () {
+                      if (onSelectTab != null) {
+                        onSelectTab!(3); // Pindah ke tab Profil
+                      }
+                    },
+                    child: Row(
+                      children: [
+                        const CircleAvatar(
+                          radius: 26,
+                          backgroundColor: AppColors.yellowAccent,
+                          backgroundImage: AssetImage('asset/yusuf.jpeg'),
+                        ),
+                        const SizedBox(width: 14),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            CircleAvatar(
-                              radius: 26,
-                              backgroundColor: AppColors.yellowAccent,
-                              backgroundImage: AssetImage(avatarPath),
-                            ),
-                            const SizedBox(width: 14),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text('Hallo,', style: AppTextStyles.caption.copyWith(fontSize: 13)),
-                                Text(
-                                  '$displayName!',
-                                  style: const TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: AppColors.textDark,
-                                  ),
-                                ),
-                              ],
+                            Text('Hallo,', style: AppTextStyles.caption.copyWith(fontSize: 13)),
+                            const Text(
+                              'Yusuf Affandi!',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                                color: AppColors.textDark,
+                              ),
                             ),
                           ],
                         ),
-                      );
-                    },
+                      ],
+                    ),
                   ),
                   Row(
                     children: [
-                      // 1. Lonceng Notifikasi Interaktif dengan Badge Dinamis Sesuai Figma (#72:325)
-                      AnimatedBuilder(
-                        animation: NotificationService.instance,
-                        builder: (context, _) {
-                          final unreadCount = NotificationService.instance.unreadCount;
-                          return GestureDetector(
-                            onTap: () => NotificationSheet.show(context, onSelectTab: onSelectTab),
-                            child: Stack(
-                              clipBehavior: Clip.none,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.all(8),
-                                  decoration: const BoxDecoration(
-                                    color: Colors.white,
-                                    shape: BoxShape.circle,
-                                    boxShadow: [
-                                      BoxShadow(
-                                        color: Color(0x10000000),
-                                        blurRadius: 6,
-                                        offset: Offset(0, 2),
-                                      ),
-                                    ],
-                                  ),
-                                  child: const Icon(
-                                    Icons.notifications_none_rounded,
-                                    color: AppColors.textDark,
-                                    size: 20,
-                                  ),
-                                ),
-                                if (unreadCount > 0)
-                                  Positioned(
-                                    top: -2,
-                                    right: -2,
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(horizontal: 5, vertical: 2),
-                                      decoration: BoxDecoration(
-                                        color: Colors.redAccent,
-                                        borderRadius: BorderRadius.circular(10),
-                                        border: Border.all(color: Colors.white, width: 1.5),
-                                      ),
-                                      constraints: const BoxConstraints(minWidth: 18, minHeight: 18),
-                                      child: Center(
-                                        child: Text(
-                                          unreadCount > 9 ? '9+' : '$unreadCount',
-                                          style: const TextStyle(
-                                            fontSize: 9,
-                                            fontWeight: FontWeight.bold,
-                                            color: Colors.white,
-                                            height: 1,
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                              ],
-                            ),
-                          );
-                        },
+                      // 1. Lonceng Notifikasi Sesuai Figma (#72:325)
+                      GestureDetector(
+                        onTap: () => NotificationSheet.show(context, onSelectTab: onSelectTab),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0x10000000),
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(
+                            Icons.notifications_none_rounded,
+                            color: AppColors.textDark,
+                            size: 20,
+                          ),
+                        ),
                       ),
                       const SizedBox(width: 8),
 
@@ -603,120 +563,101 @@ class _HomeScreenState extends State<HomeScreen> {
     );
   }
 
-  // Modal Daftar Promo & Diskon Aktif Terhubung ke CouponService
+  // Modal Daftar Promo & Diskon Aktif Sesuai Figma
   void _showPromoDialog(BuildContext context) {
+    final promos = [
+      {'code': 'SWEET10K', 'discount': '10.000', 'desc': 'Diskon Rp 10.000 untuk paket donat box coklat'},
+      {'code': 'JUMATBERKAH', 'discount': '5.000', 'desc': 'Promo Jumat Berkah cuma 5K'},
+      {'code': 'GRATISTEH', 'discount': '5.000', 'desc': 'Beli 2 Donat Gratis 1 Es Teh Manis Segar'},
+    ];
+
     showDialog(
       context: context,
-      builder: (ctx) => AnimatedBuilder(
-        animation: CouponService.instance,
-        builder: (ctx, _) {
-          final coupons = CouponService.instance.allCoupons;
-
-          return AlertDialog(
-            shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-            title: const Row(
-              children: [
-                Icon(Icons.local_offer, color: AppColors.primaryGold),
-                SizedBox(width: 8),
-                Text('Kupon Promo Aktif', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-              ],
-            ),
-            content: SizedBox(
-              width: double.maxFinite,
-              child: ListView.separated(
-                shrinkWrap: true,
-                itemCount: coupons.length,
-                separatorBuilder: (_, _) => const SizedBox(height: 10),
-                itemBuilder: (ctx, index) {
-                  final coupon = coupons[index];
-                  return _buildPromoItem(coupon);
-                },
-              ),
-            ),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(ctx),
-                child: const Text('Tutup', style: TextStyle(color: AppColors.primaryGold, fontWeight: FontWeight.bold)),
-              ),
-            ],
-          );
-        },
-      ),
-    );
-  }
-
-  Widget _buildPromoItem(CouponModel coupon) {
-    final isClaimed = coupon.isClaimed;
-
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-      decoration: BoxDecoration(
-        color: isClaimed
-            ? const Color(0xFF558B2F).withValues(alpha: 0.06)
-            : AppColors.cardBg,
-        borderRadius: BorderRadius.circular(12),
-        border: Border.all(
-          color: isClaimed
-              ? const Color(0xFF558B2F).withValues(alpha: 0.3)
-              : AppColors.primaryGold.withValues(alpha: 0.25),
+      builder: (ctx) => AlertDialog(
+        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
+        title: const Row(
+          children: [
+            Icon(Icons.local_offer, color: AppColors.primaryGold),
+            SizedBox(width: 8),
+            Text('Kupon Promo Aktif', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
+          ],
         ),
-      ),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Expanded(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
+        content: SizedBox(
+          width: double.maxFinite,
+          child: ListView.separated(
+            shrinkWrap: true,
+            itemCount: promos.length,
+            separatorBuilder: (_, _) => const SizedBox(height: 10),
+            itemBuilder: (ctx, index) {
+              final promo = promos[index];
+              return Container(
+                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
+                decoration: BoxDecoration(
+                  color: AppColors.cardBg,
+                  borderRadius: BorderRadius.circular(12),
+                  border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.25)),
+                ),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(
-                      coupon.code,
-                      style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.primaryGold),
+                    Expanded(
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
+                            children: [
+                              Text(
+                                promo['code']!,
+                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.primaryGold),
+                              ),
+                              const SizedBox(width: 6),
+                              Text(
+                                '-Rp ${promo['discount']}',
+                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF558B2F)),
+                              ),
+                            ],
+                          ),
+                          const SizedBox(height: 2),
+                          Text(
+                            promo['desc']!,
+                            style: const TextStyle(fontSize: 11, color: AppColors.textDark),
+                          ),
+                        ],
+                      ),
                     ),
-                    const SizedBox(width: 6),
-                    Text(
-                      '-Rp ${coupon.discountAmount}',
-                      style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF558B2F)),
+                    const SizedBox(width: 8),
+                    ElevatedButton(
+                      onPressed: () {
+                        Navigator.pop(ctx);
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          SnackBar(
+                            backgroundColor: const Color(0xFF43B33F),
+                            content: Text('Voucher ${promo['code']} berhasil diklaim!'),
+                            duration: const Duration(seconds: 2),
+                          ),
+                        );
+                      },
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFF43B33F),
+                        foregroundColor: Colors.white,
+                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
+                        minimumSize: const Size(60, 28),
+                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+                        elevation: 0,
+                      ),
+                      child: const Text('Ambil', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
                     ),
                   ],
                 ),
-                const SizedBox(height: 2),
-                Text(
-                  coupon.description,
-                  style: const TextStyle(fontSize: 11, color: AppColors.textDark),
-                ),
-              ],
-            ),
+              );
+            },
           ),
-          const SizedBox(width: 8),
-          if (isClaimed)
-            const Row(
-              mainAxisSize: MainAxisSize.min,
-              children: [
-                Icon(Icons.check_circle_rounded, color: Color(0xFF558B2F), size: 18),
-                SizedBox(width: 4),
-                Text(
-                  'Tersimpan',
-                  style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: Color(0xFF558B2F)),
-                ),
-              ],
-            )
-          else
-            ElevatedButton(
-              onPressed: () {
-                CouponService.instance.claimCoupon(coupon.code);
-              },
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF43B33F),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                minimumSize: const Size(60, 28),
-                shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                elevation: 0,
-              ),
-              child: const Text('Ambil', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-            ),
+        ),
+        actions: [
+          TextButton(
+            onPressed: () => Navigator.pop(ctx),
+            child: const Text('Tutup', style: TextStyle(color: AppColors.primaryGold, fontWeight: FontWeight.bold)),
+          ),
         ],
       ),
     );

@@ -3,7 +3,6 @@ import '../../core/app_colors.dart';
 import '../../core/currency_formatter.dart';
 import '../../models/product_model.dart';
 import '../../models/topping_model.dart';
-import '../../services/coupon_service.dart';
 import '../../widgets/topping_selector.dart';
 import '../../widgets/quantity_counter.dart';
 import '../order/payment_success_screen.dart';
@@ -39,22 +38,38 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
   int get _grandTotal => (_subtotal - _discount) > 0 ? (_subtotal - _discount) : 0;
 
   void _applyVoucher([String? explicitCode]) {
-    final code = (explicitCode ?? _voucherController.text).trim();
+    final code = (explicitCode ?? _voucherController.text).trim().toUpperCase();
     if (explicitCode != null) {
       _voucherController.text = explicitCode;
     }
 
-    final result = CouponService.instance.validateCoupon(code, _subtotal);
-    setState(() {
-      _discount = result.discount;
-      _voucherMessage = result.message;
-    });
+    if (code == 'SWEET10K') {
+      setState(() {
+        _discount = 10000;
+        _voucherMessage = 'Voucher SWEET10K berhasil: Diskon Rp 10.000!';
+      });
+    } else if (code == 'JUMATBERKAH') {
+      setState(() {
+        _discount = 5000;
+        _voucherMessage = 'Voucher JUMATBERKAH berhasil: Diskon Rp 5.000!';
+      });
+    } else if (code.isEmpty) {
+      setState(() {
+        _discount = 0;
+        _voucherMessage = 'Kode voucher dihapus.';
+      });
+    } else {
+      setState(() {
+        _discount = 0;
+        _voucherMessage = 'Kode voucher tidak valid.';
+      });
+    }
 
     if (_voucherMessage.isNotEmpty) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(_voucherMessage),
-          backgroundColor: result.isValid ? const Color(0xFF558B2F) : Colors.redAccent,
+          backgroundColor: _discount > 0 ? const Color(0xFF558B2F) : Colors.redAccent,
           duration: const Duration(seconds: 2),
         ),
       );
@@ -315,53 +330,59 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                 ],
               ),
 
-              // Rekomendasi Kupon Tersimpan (Klaim dari Beranda)
-              AnimatedBuilder(
-                animation: CouponService.instance,
-                builder: (context, _) {
-                  final claimed = CouponService.instance.claimedCoupons;
-                  if (claimed.isEmpty) return const SizedBox.shrink();
-
-                  return Padding(
-                    padding: const EdgeInsets.only(top: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
+              // Rekomendasi Kupon Cepat
+              Padding(
+                padding: const EdgeInsets.only(top: 10),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    const Text(
+                      'Pilihan Kupon Promo:',
+                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textMuted),
+                    ),
+                    const SizedBox(height: 6),
+                    Wrap(
+                      spacing: 8,
+                      runSpacing: 4,
                       children: [
-                        const Text(
-                          'Kupon Tersimpan di Dompetmu:',
-                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textMuted),
+                        ActionChip(
+                          avatar: Icon(
+                            _voucherController.text == 'SWEET10K' ? Icons.check_circle : Icons.local_offer_outlined,
+                            size: 14,
+                            color: _voucherController.text == 'SWEET10K' ? Colors.white : AppColors.primaryGold,
+                          ),
+                          label: const Text('SWEET10K (-Rp 10.000)'),
+                          backgroundColor: _voucherController.text == 'SWEET10K'
+                              ? const Color(0xFF558B2F)
+                              : AppColors.primaryGold.withValues(alpha: 0.1),
+                          labelStyle: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: _voucherController.text == 'SWEET10K' ? Colors.white : AppColors.primaryGold,
+                          ),
+                          onPressed: () => _applyVoucher('SWEET10K'),
                         ),
-                        const SizedBox(height: 6),
-                        Wrap(
-                          spacing: 8,
-                          runSpacing: 4,
-                          children: claimed.map((c) {
-                            final isApplied = _voucherController.text.toUpperCase() == c.code;
-
-                            return ActionChip(
-                              avatar: Icon(
-                                isApplied ? Icons.check_circle : Icons.local_offer_outlined,
-                                size: 14,
-                                color: isApplied ? Colors.white : AppColors.primaryGold,
-                              ),
-                              label: Text('${c.code} (-Rp ${c.discountAmount})'),
-                              backgroundColor: isApplied ? const Color(0xFF558B2F) : AppColors.primaryGold.withValues(alpha: 0.1),
-                              labelStyle: TextStyle(
-                                fontSize: 11,
-                                fontWeight: FontWeight.bold,
-                                color: isApplied ? Colors.white : AppColors.primaryGold,
-                              ),
-                              side: BorderSide(
-                                color: isApplied ? const Color(0xFF558B2F) : AppColors.primaryGold.withValues(alpha: 0.3),
-                              ),
-                              onPressed: () => _applyVoucher(c.code),
-                            );
-                          }).toList(),
+                        ActionChip(
+                          avatar: Icon(
+                            _voucherController.text == 'JUMATBERKAH' ? Icons.check_circle : Icons.local_offer_outlined,
+                            size: 14,
+                            color: _voucherController.text == 'JUMATBERKAH' ? Colors.white : AppColors.primaryGold,
+                          ),
+                          label: const Text('JUMATBERKAH (-Rp 5.000)'),
+                          backgroundColor: _voucherController.text == 'JUMATBERKAH'
+                              ? const Color(0xFF558B2F)
+                              : AppColors.primaryGold.withValues(alpha: 0.1),
+                          labelStyle: TextStyle(
+                            fontSize: 11,
+                            fontWeight: FontWeight.bold,
+                            color: _voucherController.text == 'JUMATBERKAH' ? Colors.white : AppColors.primaryGold,
+                          ),
+                          onPressed: () => _applyVoucher('JUMATBERKAH'),
                         ),
                       ],
                     ),
-                  );
-                },
+                  ],
+                ),
               ),
               const SizedBox(height: 20),
 

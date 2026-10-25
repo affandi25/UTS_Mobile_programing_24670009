@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
-import '../../services/auth_service.dart';
 import '../auth/login_screen.dart';
 
 class ProfileScreen extends StatefulWidget {
@@ -24,13 +23,12 @@ class _ProfileScreenState extends State<ProfileScreen> {
   @override
   void initState() {
     super.initState();
-    final user = AuthService.instance.currentUser;
-    _name = user?.name ?? 'Yusuf Affandi';
-    _bio = user?.bio ?? 'Pecinta Donat Manis & Dessert';
-    _gender = user?.gender ?? 'Laki-laki';
-    _birthDate = user?.birthDate ?? '25 Mei 2004';
-    _phone = user?.phone ?? '081234567890';
-    _email = user?.email ?? 'Akusayangkamu@gmail.com';
+    _name = 'Yusuf Affandi';
+    _bio = 'Pecinta Donat Manis & Dessert';
+    _gender = 'Laki-laki';
+    _birthDate = '25 Mei 2004';
+    _phone = '081234567890';
+    _email = 'Akusayangkamu@gmail.com';
   }
 
   // Modal Ubah Foto Profil Sesuai Figma (#169:1031)
@@ -360,7 +358,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
               shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(10)),
             ),
             onPressed: () {
-              AuthService.instance.logout();
               Navigator.pop(ctx);
               Navigator.pushAndRemoveUntil(
                 context,
@@ -376,19 +373,6 @@ class _ProfileScreenState extends State<ProfileScreen> {
   }
 
   void _saveProfile() {
-    final current = AuthService.instance.currentUser;
-    if (current != null) {
-      final updated = current.copyWith(
-        name: _name,
-        bio: _bio,
-        gender: _gender,
-        birthDate: _birthDate,
-        phone: _phone,
-        email: _email,
-      );
-      AuthService.instance.updateProfile(updated);
-    }
-
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
         backgroundColor: Color(0xFFBD8800),

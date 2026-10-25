@@ -1,7 +1,6 @@
 import 'dart:ui';
 import 'package:flutter/material.dart';
 import '../core/app_colors.dart';
-import '../services/coupon_service.dart';
 
 class PromoBannerSlider extends StatefulWidget {
   const PromoBannerSlider({super.key});
@@ -58,15 +57,20 @@ class _PromoBannerSliderState extends State<PromoBannerSlider> {
     super.dispose();
   }
 
+  final Set<String> _claimedCodes = {};
+
   void _claimPromo(String code, String promoName) {
-    final success = CouponService.instance.claimCoupon(code);
+    final alreadyClaimed = _claimedCodes.contains(code);
+    setState(() {
+      _claimedCodes.add(code);
+    });
     ScaffoldMessenger.of(context).showSnackBar(
       SnackBar(
-        backgroundColor: success ? const Color(0xFF43B33F) : AppColors.primaryGold,
+        backgroundColor: alreadyClaimed ? AppColors.primaryGold : const Color(0xFF43B33F),
         content: Text(
-          success
-              ? 'Kupon "$code" ($promoName) berhasil diklaim & masuk dompet voucher!'
-              : 'Kupon "$code" sudah ada di dompet voucher kamu.',
+          alreadyClaimed
+              ? 'Kupon "$code" sudah tersimpan!'
+              : 'Kupon "$code" ($promoName) berhasil diklaim!',
         ),
         duration: const Duration(seconds: 2),
       ),
@@ -156,11 +160,10 @@ class _PromoBannerSliderState extends State<PromoBannerSlider> {
                             const Spacer(),
 
                             // Tombol Hijau "Ambil" Sesuai Figma (#EL-0ce5c2ca, #EL-1065d696: width 120, height 33, #43B33F)
-                            AnimatedBuilder(
-                              animation: CouponService.instance,
-                              builder: (context, _) {
+                            Builder(
+                              builder: (context) {
                                 final code = promo['code'] as String;
-                                final isClaimed = CouponService.instance.isClaimed(code);
+                                final isClaimed = _claimedCodes.contains(code);
 
                                 return SizedBox(
                                   width: 116,
@@ -169,8 +172,8 @@ class _PromoBannerSliderState extends State<PromoBannerSlider> {
                                     onPressed: () => _claimPromo(code, promo['subtitle'] as String),
                                     style: ElevatedButton.styleFrom(
                                       backgroundColor: isClaimed
-                                          ? const Color(0xFF2E7D32) // Hijau tua saat sudah diklaim
-                                          : const Color(0xFF43B33F), // Hijau terang Figma
+                                          ? const Color(0xFF2E7D32)
+                                          : const Color(0xFF43B33F),
                                       elevation: 2,
                                       shape: RoundedRectangleBorder(
                                         borderRadius: BorderRadius.circular(10),

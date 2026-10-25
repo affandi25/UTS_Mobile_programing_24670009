@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../core/app_text_styles.dart';
-import '../../services/auth_service.dart';
 import '../main_nav_screen.dart';
 import 'register_screen.dart';
 
@@ -24,7 +23,7 @@ class _LoginScreenState extends State<LoginScreen> {
     super.dispose();
   }
 
-  void _handleLogin() async {
+  void _handleLogin() {
     final email = _usernameController.text.trim();
     final password = _passwordController.text.trim();
 
@@ -35,25 +34,19 @@ class _LoginScreenState extends State<LoginScreen> {
       return;
     }
 
-    final success = await AuthService.instance.login(email, password);
-    if (!mounted) return;
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        backgroundColor: AppColors.successGreen,
+        content: Text('Login berhasil! Selamat datang, Yusuf Affandi'),
+        duration: Duration(seconds: 1),
+      ),
+    );
 
-    if (success) {
-      final user = AuthService.instance.currentUser;
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(
-          backgroundColor: AppColors.successGreen,
-          content: Text('Login berhasil! Selamat datang, ${user?.name ?? email}'),
-          duration: const Duration(seconds: 1),
-        ),
-      );
-
-      Navigator.pushAndRemoveUntil(
-        context,
-        MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
-        (route) => false,
-      );
-    }
+    Navigator.pushAndRemoveUntil(
+      context,
+      MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
+      (route) => false,
+    );
   }
 
   @override
