@@ -8,8 +8,8 @@ import '../../services/notification_service.dart';
 import '../../services/product_service.dart';
 import '../../models/coupon_model.dart';
 import 'widgets/notification_sheet.dart';
-import 'widgets/settings_sheet.dart';
 import '../menu/menu_catalog_screen.dart';
+import '../profile/profile_screen.dart';
 import '../../widgets/promo_banner_slider.dart';
 import '../menu/product_detail_screen.dart';
 
@@ -203,7 +203,16 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       // 3. Ikon Gear / Pengaturan Sesuai Figma (#72:307)
                       GestureDetector(
-                        onTap: () => SettingsSheet.show(context, onSelectTab: onSelectTab),
+                        onTap: () {
+                          if (onSelectTab != null) {
+                            onSelectTab!(3); // Pindah ke tab Profil di MainNavigationScreen
+                          } else {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(builder: (_) => const ProfileScreen()),
+                            );
+                          }
+                        },
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: const BoxDecoration(
