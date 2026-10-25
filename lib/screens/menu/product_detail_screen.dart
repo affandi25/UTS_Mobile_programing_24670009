@@ -329,61 +329,6 @@ class _ProductDetailScreenState extends State<ProductDetailScreen> {
                   ),
                 ],
               ),
-
-              // Rekomendasi Kupon Cepat
-              Padding(
-                padding: const EdgeInsets.only(top: 10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Text(
-                      'Pilihan Kupon Promo:',
-                      style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold, color: AppColors.textMuted),
-                    ),
-                    const SizedBox(height: 6),
-                    Wrap(
-                      spacing: 8,
-                      runSpacing: 4,
-                      children: [
-                        ActionChip(
-                          avatar: Icon(
-                            _voucherController.text == 'SWEET10K' ? Icons.check_circle : Icons.local_offer_outlined,
-                            size: 14,
-                            color: _voucherController.text == 'SWEET10K' ? Colors.white : AppColors.primaryGold,
-                          ),
-                          label: const Text('SWEET10K (-Rp 10.000)'),
-                          backgroundColor: _voucherController.text == 'SWEET10K'
-                              ? const Color(0xFF558B2F)
-                              : AppColors.primaryGold.withValues(alpha: 0.1),
-                          labelStyle: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: _voucherController.text == 'SWEET10K' ? Colors.white : AppColors.primaryGold,
-                          ),
-                          onPressed: () => _applyVoucher('SWEET10K'),
-                        ),
-                        ActionChip(
-                          avatar: Icon(
-                            _voucherController.text == 'JUMATBERKAH' ? Icons.check_circle : Icons.local_offer_outlined,
-                            size: 14,
-                            color: _voucherController.text == 'JUMATBERKAH' ? Colors.white : AppColors.primaryGold,
-                          ),
-                          label: const Text('JUMATBERKAH (-Rp 5.000)'),
-                          backgroundColor: _voucherController.text == 'JUMATBERKAH'
-                              ? const Color(0xFF558B2F)
-                              : AppColors.primaryGold.withValues(alpha: 0.1),
-                          labelStyle: TextStyle(
-                            fontSize: 11,
-                            fontWeight: FontWeight.bold,
-                            color: _voucherController.text == 'JUMATBERKAH' ? Colors.white : AppColors.primaryGold,
-                          ),
-                          onPressed: () => _applyVoucher('JUMATBERKAH'),
-                        ),
-                      ],
-                    ),
-                  ],
-                ),
-              ),
               const SizedBox(height: 20),
 
               // Metode Pembayaran Sesuai Figma (#72:795)

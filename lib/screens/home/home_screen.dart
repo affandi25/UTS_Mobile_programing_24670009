@@ -3,8 +3,6 @@ import '../../core/app_colors.dart';
 import '../../core/app_text_styles.dart';
 import '../../data/dummy_data.dart';
 import '../../models/product_model.dart';
-import 'widgets/notification_sheet.dart';
-import 'widgets/chat_sheet.dart';
 import '../menu/menu_catalog_screen.dart';
 import '../profile/profile_screen.dart';
 import '../../widgets/promo_banner_slider.dart';
@@ -118,7 +116,14 @@ class _HomeScreenState extends State<HomeScreen> {
                     children: [
                       // 1. Lonceng Notifikasi Sesuai Figma (#72:325)
                       GestureDetector(
-                        onTap: () => NotificationSheet.show(context, onSelectTab: onSelectTab),
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Notifikasi: Promo Donat 10K sedang aktif!'),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: const BoxDecoration(
@@ -143,7 +148,14 @@ class _HomeScreenState extends State<HomeScreen> {
 
                       // 2. Ikon Chat / Bantuan Sesuai Figma (#72:314 & #130:1069)
                       GestureDetector(
-                        onTap: () => ChatSheet.show(context),
+                        onTap: () {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                              content: Text('Bantuan: CS SweetBite WhatsApp (+62 812-3456-7890)'),
+                              duration: Duration(seconds: 1),
+                            ),
+                          );
+                        },
                         child: Container(
                           padding: const EdgeInsets.all(8),
                           decoration: const BoxDecoration(
@@ -250,10 +262,24 @@ class _HomeScreenState extends State<HomeScreen> {
                       icon: Icons.location_on_outlined,
                       label: 'Lokasi',
                       color: const Color(0xFFD19025),
-                      onTap: () => _showLocationDialog(context),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Lokasi Outlet: Jl. Cakrawala No. 25, Kota Malang'),
+                            duration: Duration(seconds: 1),
+                          ),
+                        );
+                      },
                     ),
                     _buildQuickActionPercent(
-                      onTap: () => _showPromoDialog(context),
+                      onTap: () {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text('Promo: Voucher Donat Diskon 10K sedang aktif!'),
+                            duration: Duration(seconds: 1),
+                          ),
+                        );
+                      },
                     ),
                     _buildQuickActionIcon(
                       icon: Icons.receipt_long_outlined,
@@ -519,144 +545,6 @@ class _HomeScreenState extends State<HomeScreen> {
                 ),
               ],
             ),
-          ),
-        ],
-      ),
-    );
-  }
-
-
-  // Modal Info Lokasi Outlet SweetBite
-  void _showLocationDialog(BuildContext context) {
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Row(
-          children: [
-            Icon(Icons.location_on, color: AppColors.primaryGold),
-            SizedBox(width: 8),
-            Text('Outlet SweetBite', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          ],
-        ),
-        content: const Column(
-          mainAxisSize: MainAxisSize.min,
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text('Cabang Utama:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-            Text('Jl. Cakrawala No. 25, Kota Malang', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
-            SizedBox(height: 10),
-            Text('Jam Operasional:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-            Text('Setiap Hari: 08.00 - 21.00 WIB', style: TextStyle(color: AppColors.textMuted, fontSize: 12)),
-            SizedBox(height: 10),
-            Text('Status Layanan:', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 13)),
-            Text('Tersedia Instant Delivery & Takeaway', style: TextStyle(color: Color(0xFF558B2F), fontSize: 12, fontWeight: FontWeight.w600)),
-          ],
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Tutup', style: TextStyle(color: AppColors.primaryGold, fontWeight: FontWeight.bold)),
-          ),
-        ],
-      ),
-    );
-  }
-
-  // Modal Daftar Promo & Diskon Aktif Sesuai Figma
-  void _showPromoDialog(BuildContext context) {
-    final promos = [
-      {'code': 'SWEET10K', 'discount': '10.000', 'desc': 'Diskon Rp 10.000 untuk paket donat box coklat'},
-      {'code': 'JUMATBERKAH', 'discount': '5.000', 'desc': 'Promo Jumat Berkah cuma 5K'},
-      {'code': 'GRATISTEH', 'discount': '5.000', 'desc': 'Beli 2 Donat Gratis 1 Es Teh Manis Segar'},
-    ];
-
-    showDialog(
-      context: context,
-      builder: (ctx) => AlertDialog(
-        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(20)),
-        title: const Row(
-          children: [
-            Icon(Icons.local_offer, color: AppColors.primaryGold),
-            SizedBox(width: 8),
-            Text('Kupon Promo Aktif', style: TextStyle(fontWeight: FontWeight.bold, fontSize: 18)),
-          ],
-        ),
-        content: SizedBox(
-          width: double.maxFinite,
-          child: ListView.separated(
-            shrinkWrap: true,
-            itemCount: promos.length,
-            separatorBuilder: (_, _) => const SizedBox(height: 10),
-            itemBuilder: (ctx, index) {
-              final promo = promos[index];
-              return Container(
-                padding: const EdgeInsets.symmetric(horizontal: 14, vertical: 10),
-                decoration: BoxDecoration(
-                  color: AppColors.cardBg,
-                  borderRadius: BorderRadius.circular(12),
-                  border: Border.all(color: AppColors.primaryGold.withValues(alpha: 0.25)),
-                ),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Expanded(
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              Text(
-                                promo['code']!,
-                                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 13, color: AppColors.primaryGold),
-                              ),
-                              const SizedBox(width: 6),
-                              Text(
-                                '-Rp ${promo['discount']}',
-                                style: const TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: Color(0xFF558B2F)),
-                              ),
-                            ],
-                          ),
-                          const SizedBox(height: 2),
-                          Text(
-                            promo['desc']!,
-                            style: const TextStyle(fontSize: 11, color: AppColors.textDark),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(width: 8),
-                    ElevatedButton(
-                      onPressed: () {
-                        Navigator.pop(ctx);
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(
-                            backgroundColor: const Color(0xFF43B33F),
-                            content: Text('Voucher ${promo['code']} berhasil diklaim!'),
-                            duration: const Duration(seconds: 2),
-                          ),
-                        );
-                      },
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF43B33F),
-                        foregroundColor: Colors.white,
-                        padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 4),
-                        minimumSize: const Size(60, 28),
-                        shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
-                        elevation: 0,
-                      ),
-                      child: const Text('Ambil', style: TextStyle(fontSize: 11, fontWeight: FontWeight.bold)),
-                    ),
-                  ],
-                ),
-              );
-            },
-          ),
-        ),
-        actions: [
-          TextButton(
-            onPressed: () => Navigator.pop(ctx),
-            child: const Text('Tutup', style: TextStyle(color: AppColors.primaryGold, fontWeight: FontWeight.bold)),
           ),
         ],
       ),
