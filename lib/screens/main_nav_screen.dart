@@ -5,17 +5,8 @@ import 'menu/menu_catalog_screen.dart';
 import 'order/my_order_screen.dart';
 import 'profile/profile_screen.dart';
 
-class MainNavigationScreen extends StatelessWidget {
-  const MainNavigationScreen({super.key});
-
-  @override
-  Widget build(BuildContext context) {
-    return const Scaffold(
-      body: HomeScreen(),
-      bottomNavigationBar: AppBottomNavBar(currentIndex: 0),
-    );
-  }
-}
+// MainNavigationScreen sekarang langsung mengarah ke HomeScreen
+typedef MainNavigationScreen = HomeScreen;
 
 // Widget Menu Navigasi Bawah yang dipakai di setiap halaman
 class AppBottomNavBar extends StatelessWidget {

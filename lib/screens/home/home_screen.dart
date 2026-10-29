@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
+import '../main_nav_screen.dart';
 import '../menu/menu_catalog_screen.dart';
 import '../order/my_order_screen.dart';
 import '../profile/profile_screen.dart';
@@ -364,6 +365,7 @@ class HomeScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 0),
     );
   }
 

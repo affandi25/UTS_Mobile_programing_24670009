@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
-import '../main_nav_screen.dart';
+import '../home/home_screen.dart';
 import 'register_screen.dart';
 
 class LoginScreen extends StatelessWidget {
@@ -102,7 +102,7 @@ class LoginScreen extends StatelessWidget {
                 onTap: () {
                   Navigator.pushReplacement(
                     context,
-                    MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
+                    MaterialPageRoute(builder: (_) => const HomeScreen()),
                   );
                 },
                 child: Container(
