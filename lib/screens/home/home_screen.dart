@@ -218,7 +218,7 @@ class HomeScreen extends StatelessWidget {
                       child: const Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.receipt_long_outlined, size: 28, color: Color(0xFF558B2F)),
+                          Icon(Icons.grid_view_rounded, size: 28, color: Color(0xFF558B2F)),
                           SizedBox(height: 4),
                           Text(
                             'Menu',
@@ -228,7 +228,7 @@ class HomeScreen extends StatelessWidget {
                       ),
                     ),
 
-                    // D. Menu Kirim
+                    // D. Menu Riwayat (Pesanan)
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -241,10 +241,10 @@ class HomeScreen extends StatelessWidget {
                       child: const Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Icon(Icons.near_me_rounded, size: 28, color: Color(0xFF1EC5EA)),
+                          Icon(Icons.receipt_long_rounded, size: 28, color: Color(0xFF1EC5EA)),
                           SizedBox(height: 4),
                           Text(
-                            'Kirim',
+                            'Riwayat',
                             style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted),
                           ),
                         ],
