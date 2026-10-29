@@ -64,15 +64,11 @@ class AppBottomNavBar extends StatelessWidget {
         onTap: (index) {
           if (index == currentIndex) return;
 
-          // 1. Jika klik ikon Beranda di bawah, langsung kembali ke Beranda utama
-          if (index == 0) {
-            Navigator.popUntil(context, (route) => route.isFirst);
-            return;
-          }
-
-          // 2. Tentukan halaman tujuan (cukup ditulis 1 kali)
+          // Tentukan halaman tujuan (0 = Beranda, 1 = Menu, 2 = Pesanan, 3 = Profil)
           Widget halamanTujuan;
-          if (index == 1) {
+          if (index == 0) {
+            halamanTujuan = const HomeScreen();
+          } else if (index == 1) {
             halamanTujuan = const MenuCatalogScreen();
           } else if (index == 2) {
             halamanTujuan = const MyOrderScreen();
@@ -80,7 +76,7 @@ class AppBottomNavBar extends StatelessWidget {
             halamanTujuan = const ProfileScreen();
           }
 
-          // 3. Buka halaman tujuan dengan push (menumpuk riwayat sesuai konsep LIFO)
+          // Semua halaman dibuka seragam menggunakan push
           Navigator.push(context, MaterialPageRoute(builder: (_) => halamanTujuan));
         },
       ),
