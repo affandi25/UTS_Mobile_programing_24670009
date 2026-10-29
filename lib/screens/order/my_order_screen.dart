@@ -167,7 +167,181 @@ class MyOrderScreen extends StatelessWidget {
                     itemCount: orders.length,
                     itemBuilder: (context, index) {
                       final order = orders[index];
-                      return _buildOrderCard(order);
+                      final toppingText = order['topping'] as String? ?? 'Tanpa Topping';
+
+                      return Container(
+                        margin: const EdgeInsets.only(bottom: 16),
+                        padding: const EdgeInsets.all(14),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(16),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color(0x18000000),
+                              blurRadius: 8,
+                              offset: Offset(0, 3),
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // A. Bagian Atas: Gambar Donat (Kiri) + Info Pesanan (Kanan)
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // 1. Gambar Donat Kotak Sesuai Dimensi Figma (99 x 100 dp)
+                                Container(
+                                  width: 95,
+                                  height: 95,
+                                  decoration: BoxDecoration(
+                                    color: AppColors.scaffoldBg,
+                                    borderRadius: BorderRadius.circular(10),
+                                  ),
+                                  child: ClipRRect(
+                                    borderRadius: BorderRadius.circular(10),
+                                    child: (order['imagePath'] as String? ?? '').isNotEmpty
+                                        ? Image.asset(
+                                            order['imagePath'] as String,
+                                            fit: BoxFit.cover,
+                                            errorBuilder: (context, error, stackTrace) => const Icon(
+                                              Icons.cake_rounded,
+                                              size: 44,
+                                              color: AppColors.primaryGold,
+                                            ),
+                                          )
+                                        : const Icon(
+                                            Icons.cake_rounded,
+                                            size: 44,
+                                            color: AppColors.primaryGold,
+                                          ),
+                                  ),
+                                ),
+                                const SizedBox(width: 14),
+
+                                // 2. Info Donat, Harga, Kuantitas, dan Topping
+                                Expanded(
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      // Nama Varian Donat
+                                      Text(
+                                        order['name'] as String? ?? '',
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 17,
+                                          fontWeight: FontWeight.bold,
+                                          color: AppColors.textDark,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 5),
+
+                                      // Harga Satuan & Metode Pembayaran Sesuai Figma ("RP.10.000 - Dana")
+                                      Text(
+                                        'RP.${((order['price'] as int? ?? 0) ~/ 1000)}.000 - Dana',
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 13,
+                                          fontWeight: FontWeight.w600,
+                                          color: Color(0xFF2A5EB0),
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+
+                                      // Jumlah Kuantitas Sesuai Figma ("Jumlah: 2")
+                                      Text(
+                                        'Jumlah: ${order['quantity'] ?? 1}',
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 13,
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 4),
+
+                                      // Info Topping Sesuai Figma ("Toping : oreo")
+                                      Text(
+                                        'Toping : $toppingText',
+                                        style: const TextStyle(
+                                          fontFamily: 'Inter',
+                                          fontSize: 13,
+                                          color: Colors.black54,
+                                          fontWeight: FontWeight.w500,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+
+                            // B. Garis Pemisah Tipis
+                            Container(
+                              height: 1,
+                              color: const Color(0xFFF0F0F0),
+                              margin: const EdgeInsets.symmetric(vertical: 12),
+                            ),
+
+                            // C. Bagian Bawah: Order Status (Kiri) + Total Harga (Kanan) Sesuai Figma (#125:734 & #125:735)
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              children: [
+                                // Status Pengiriman
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Order Status :',
+                                      style: TextStyle(
+                                        fontFamily: 'Inter',
+                                        fontSize: 12,
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.black54,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 2),
+                                    Row(
+                                      children: [
+                                        Container(
+                                          width: 8,
+                                          height: 8,
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xFF0FA92C),
+                                            shape: BoxShape.circle,
+                                          ),
+                                        ),
+                                        const SizedBox(width: 5),
+                                        Text(
+                                          order['status'] as String? ?? 'delivery',
+                                          style: const TextStyle(
+                                            fontFamily: 'Inter',
+                                            fontSize: 14,
+                                            fontWeight: FontWeight.bold,
+                                            color: Color(0xFF0FA92C),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+
+                                // Total Harga Pesanan
+                                Text(
+                                  'Total : Rp ${((order['totalPrice'] as int? ?? 0) ~/ 1000)}.000',
+                                  style: const TextStyle(
+                                    fontFamily: 'Inter',
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                    color: AppColors.textDark,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
                     },
                   ),
           ),
@@ -176,183 +350,5 @@ class MyOrderScreen extends StatelessWidget {
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
     );
   }
-
-  // Widget Kartu Pesanan Persis Figma (#125:728: "BAWAH")
-  Widget _buildOrderCard(Map<String, dynamic> order) {
-    final toppingText = order['topping'] as String? ?? 'Tanpa Topping';
-
-    return Container(
-      margin: const EdgeInsets.only(bottom: 16),
-      padding: const EdgeInsets.all(14),
-      decoration: BoxDecoration(
-        color: Colors.white,
-        borderRadius: BorderRadius.circular(16),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x18000000),
-            blurRadius: 8,
-            offset: Offset(0, 3),
-          ),
-        ],
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          // A. Bagian Atas: Gambar Donat (Kiri) + Info Pesanan (Kanan)
-          Row(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              // 1. Gambar Donat Kotak Sesuai Dimensi Figma (99 x 100 dp)
-              Container(
-                width: 95,
-                height: 95,
-                decoration: BoxDecoration(
-                  color: AppColors.scaffoldBg,
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: ClipRRect(
-                  borderRadius: BorderRadius.circular(10),
-                  child: (order['imagePath'] as String? ?? '').isNotEmpty
-                      ? Image.asset(
-                          order['imagePath'] as String,
-                          fit: BoxFit.cover,
-                          errorBuilder: (context, error, stackTrace) => const Icon(
-                            Icons.cake_rounded,
-                            size: 44,
-                            color: AppColors.primaryGold,
-                          ),
-                        )
-                      : const Icon(
-                          Icons.cake_rounded,
-                          size: 44,
-                          color: AppColors.primaryGold,
-                        ),
-                ),
-              ),
-              const SizedBox(width: 14),
-
-              // 2. Info Donat, Harga, Kuantitas, dan Topping
-              Expanded(
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    // Nama Varian Donat
-                    Text(
-                      order['name'] as String? ?? '',
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 17,
-                        fontWeight: FontWeight.bold,
-                        color: AppColors.textDark,
-                      ),
-                    ),
-                    const SizedBox(height: 5),
-
-                    // Harga Satuan & Metode Pembayaran Sesuai Figma ("RP.10.000 - Dana")
-                    Text(
-                      'RP.${((order['price'] as int? ?? 0) ~/ 1000)}.000 - Dana',
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 13,
-                        fontWeight: FontWeight.w600,
-                        color: Color(0xFF2A5EB0), // Biru khas metode dompet digital
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-
-                    // Jumlah Kuantitas Sesuai Figma ("Jumlah: 2")
-                    Text(
-                      'Jumlah: ${order['quantity'] ?? 1}',
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 13,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                    const SizedBox(height: 4),
-
-                    // Info Topping Sesuai Figma ("Toping : oreo")
-                    Text(
-                      'Toping : $toppingText',
-                      style: const TextStyle(
-                        fontFamily: 'Inter',
-                        fontSize: 13,
-                        color: Colors.black54,
-                        fontWeight: FontWeight.w500,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
-          ),
-
-          // B. Garis Pemisah Tipis
-          Container(
-            height: 1,
-            color: const Color(0xFFF0F0F0),
-            margin: const EdgeInsets.symmetric(vertical: 12),
-          ),
-
-          // C. Bagian Bawah: Order Status (Kiri) + Total Harga (Kanan) Sesuai Figma (#125:734 & #125:735)
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              // Status Pengiriman
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Text(
-                    'Order Status :',
-                    style: TextStyle(
-                      fontFamily: 'Inter',
-                      fontSize: 12,
-                      fontWeight: FontWeight.w500,
-                      color: Colors.black54,
-                    ),
-                  ),
-                  const SizedBox(height: 2),
-                  Row(
-                    children: [
-                      Container(
-                        width: 8,
-                        height: 8,
-                        decoration: const BoxDecoration(
-                          color: Color(0xFF0FA92C), // Hijau cerah khas Figma
-                          shape: BoxShape.circle,
-                        ),
-                      ),
-                      const SizedBox(width: 5),
-                      Text(
-                        order['status'] as String? ?? 'delivery',
-                        style: const TextStyle(
-                          fontFamily: 'Inter',
-                          fontSize: 14,
-                          fontWeight: FontWeight.bold,
-                          color: Color(0xFF0FA92C), // Hijau cerah khas Figma
-                        ),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-
-              // Total Harga Pesanan
-              Text(
-                'Total : Rp ${((order['totalPrice'] as int? ?? 0) ~/ 1000)}.000',
-                style: const TextStyle(
-                  fontFamily: 'Inter',
-                  fontSize: 15,
-                  fontWeight: FontWeight.bold,
-                  color: AppColors.textDark,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
-  }
 }
+
