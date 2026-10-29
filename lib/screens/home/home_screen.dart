@@ -6,14 +6,7 @@ import '../order/my_order_screen.dart';
 import '../profile/profile_screen.dart';
 
 class HomeScreen extends StatelessWidget {
-  final Function(int tabIndex)? onSelectTab;
-  final Function(String query)? onSearchCatalog;
-
-  const HomeScreen({
-    super.key,
-    this.onSelectTab,
-    this.onSearchCatalog,
-  });
+  const HomeScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -80,29 +73,39 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 28),
 
-              // 2. Search Bar Statis
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
-                decoration: BoxDecoration(
-                  color: AppColors.grayInput.withValues(alpha: 0.6),
-                  borderRadius: BorderRadius.circular(16),
-                  boxShadow: const [
-                    BoxShadow(
-                      color: Color(0x10000000),
-                      blurRadius: 8,
-                      offset: Offset(0, 3),
+              // 2. Search Bar
+              GestureDetector(
+                onTap: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const MenuCatalogScreen(showBackButton: true),
                     ),
-                  ],
-                ),
-                child: const Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Text(
-                      'Cari varian rasa donat...',
-                      style: TextStyle(fontSize: 14, color: Colors.black54),
-                    ),
-                    Icon(Icons.search_rounded, color: Colors.black54, size: 24),
-                  ],
+                  );
+                },
+                child: Container(
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
+                  decoration: BoxDecoration(
+                    color: AppColors.grayInput.withValues(alpha: 0.6),
+                    borderRadius: BorderRadius.circular(16),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x10000000),
+                        blurRadius: 8,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
+                  ),
+                  child: const Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Text(
+                        'Cari varian rasa donat...',
+                        style: TextStyle(fontSize: 14, color: Colors.black54),
+                      ),
+                      Icon(Icons.search_rounded, color: Colors.black54, size: 24),
+                    ],
+                  ),
                 ),
               ),
               const SizedBox(height: 26),
@@ -222,27 +225,37 @@ class HomeScreen extends StatelessWidget {
                             ),
                             const Spacer(),
                             // Tombol "Ambil"
-                            Container(
-                              width: 116,
-                              height: 33,
-                              alignment: Alignment.center,
-                              decoration: BoxDecoration(
-                                color: const Color(0xFF43B33F),
-                                borderRadius: BorderRadius.circular(10),
-                                boxShadow: const [
-                                  BoxShadow(
-                                    color: Color(0x20000000),
-                                    blurRadius: 4,
-                                    offset: Offset(0, 2),
+                            GestureDetector(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (_) => const MenuCatalogScreen(showBackButton: true),
                                   ),
-                                ],
-                              ),
-                              child: const Text(
-                                'Ambil',
-                                style: TextStyle(
-                                  fontSize: 13,
-                                  fontWeight: FontWeight.bold,
-                                  color: Colors.white,
+                                );
+                              },
+                              child: Container(
+                                width: 116,
+                                height: 33,
+                                alignment: Alignment.center,
+                                decoration: BoxDecoration(
+                                  color: const Color(0xFF43B33F),
+                                  borderRadius: BorderRadius.circular(10),
+                                  boxShadow: const [
+                                    BoxShadow(
+                                      color: Color(0x20000000),
+                                      blurRadius: 4,
+                                      offset: Offset(0, 2),
+                                    ),
+                                  ],
+                                ),
+                                child: const Text(
+                                  'Ambil',
+                                  style: TextStyle(
+                                    fontSize: 13,
+                                    fontWeight: FontWeight.bold,
+                                    color: Colors.white,
+                                  ),
                                 ),
                               ),
                             ),
@@ -455,63 +468,73 @@ class _BestSellerCard extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        // Foto Donat
-        Container(
-          width: 100,
-          height: 122,
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(14),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x35000000),
-                blurRadius: 6,
-                offset: Offset(0, 3),
-              ),
-            ],
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (_) => const MenuCatalogScreen(showBackButton: true),
           ),
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(14),
-            child: Image.asset(imagePath, fit: BoxFit.cover),
-          ),
-        ),
-        const SizedBox(height: 14),
-
-        // Tombol Ungu "PESAN"
-        Container(
-          width: 103,
-          height: 28,
-          decoration: BoxDecoration(
-            color: const Color(0xFF431BC6),
-            borderRadius: BorderRadius.circular(13),
-            boxShadow: const [
-              BoxShadow(
-                color: Color(0x25000000),
-                blurRadius: 4,
-                offset: Offset(0, 2),
-              ),
-            ],
-          ),
-          child: const Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: [
-              Icon(Icons.shopping_cart_outlined, size: 14, color: Colors.white),
-              SizedBox(width: 4),
-              Text(
-                'PESAN',
-                style: TextStyle(
-                  fontSize: 11,
-                  fontWeight: FontWeight.bold,
-                  color: Colors.white,
-                  letterSpacing: 0.5,
+        );
+      },
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Foto Donat
+          Container(
+            width: 100,
+            height: 122,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(14),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x35000000),
+                  blurRadius: 6,
+                  offset: Offset(0, 3),
                 ),
-              ),
-            ],
+              ],
+            ),
+            child: ClipRRect(
+              borderRadius: BorderRadius.circular(14),
+              child: Image.asset(imagePath, fit: BoxFit.cover),
+            ),
           ),
-        ),
-      ],
+          const SizedBox(height: 14),
+
+          // Tombol Ungu "PESAN"
+          Container(
+            width: 103,
+            height: 28,
+            decoration: BoxDecoration(
+              color: const Color(0xFF431BC6),
+              borderRadius: BorderRadius.circular(13),
+              boxShadow: const [
+                BoxShadow(
+                  color: Color(0x25000000),
+                  blurRadius: 4,
+                  offset: Offset(0, 2),
+                ),
+              ],
+            ),
+            child: const Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                Icon(Icons.shopping_cart_outlined, size: 14, color: Colors.white),
+                SizedBox(width: 4),
+                Text(
+                  'PESAN',
+                  style: TextStyle(
+                    fontSize: 11,
+                    fontWeight: FontWeight.bold,
+                    color: Colors.white,
+                    letterSpacing: 0.5,
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
