@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+
 import '../core/app_colors.dart';
 import 'home/home_screen.dart';
 import 'menu/menu_catalog_screen.dart';
@@ -12,10 +13,7 @@ typedef MainNavigationScreen = HomeScreen;
 class AppBottomNavBar extends StatelessWidget {
   final int currentIndex;
 
-  const AppBottomNavBar({
-    super.key,
-    required this.currentIndex,
-  });
+  const AppBottomNavBar({super.key, required this.currentIndex});
 
   @override
   Widget build(BuildContext context) {
@@ -37,7 +35,10 @@ class AppBottomNavBar extends StatelessWidget {
         type: BottomNavigationBarType.fixed,
         selectedItemColor: AppColors.primaryGold,
         unselectedItemColor: AppColors.textMuted.withValues(alpha: 0.6),
-        selectedLabelStyle: const TextStyle(fontWeight: FontWeight.bold, fontSize: 12),
+        selectedLabelStyle: const TextStyle(
+          fontWeight: FontWeight.bold,
+          fontSize: 12,
+        ),
         unselectedLabelStyle: const TextStyle(fontSize: 11),
 
         // 1. DAFTAR TAMPILAN MENU (ITEMS)
@@ -64,11 +65,15 @@ class AppBottomNavBar extends StatelessWidget {
         onTap: (index) {
           if (index == currentIndex) return;
 
-          // Tentukan halaman tujuan (0 = Beranda, 1 = Menu, 2 = Pesanan, 3 = Profil)
-          Widget halamanTujuan;
+          // 1. Jika klik ikon Beranda di bawah, langsung kembali ke Beranda utama
           if (index == 0) {
-            halamanTujuan = const HomeScreen();
-          } else if (index == 1) {
+            Navigator.popUntil(context, (route) => route.isFirst);
+            return;
+          }
+
+          // 2. Tentukan halaman tujuan (cukup ditulis 1 kali)
+          Widget halamanTujuan;
+          if (index == 1) {
             halamanTujuan = const MenuCatalogScreen();
           } else if (index == 2) {
             halamanTujuan = const MyOrderScreen();
@@ -76,8 +81,11 @@ class AppBottomNavBar extends StatelessWidget {
             halamanTujuan = const ProfileScreen();
           }
 
-          // Semua halaman dibuka seragam menggunakan push
-          Navigator.push(context, MaterialPageRoute(builder: (_) => halamanTujuan));
+          // 3. Buka halaman tujuan dengan push (menumpuk riwayat sesuai konsep LIFO)
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (_) => halamanTujuan),
+          );
         },
       ),
     );
