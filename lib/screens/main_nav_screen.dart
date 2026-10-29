@@ -1,13 +1,9 @@
 import 'package:flutter/material.dart';
 
 import '../core/app_colors.dart';
-import 'home/home_screen.dart';
 import 'menu/menu_catalog_screen.dart';
 import 'order/my_order_screen.dart';
 import 'profile/profile_screen.dart';
-
-// MainNavigationScreen sekarang langsung mengarah ke HomeScreen
-typedef MainNavigationScreen = HomeScreen;
 
 // Widget Menu Navigasi Bawah yang dipakai di setiap halaman
 class AppBottomNavBar extends StatelessWidget {
