@@ -64,27 +64,45 @@ class AppBottomNavBar extends StatelessWidget {
         onTap: (index) {
           if (index == currentIndex) return;
 
-          // A. Jika mengklik "Beranda" (index 0), langsung kembali pakai pop!
           if (index == 0) {
+            // Kembali ke Beranda
             Navigator.pop(context);
-            return;
-          }
-
-          // B. Tentukan halaman tujuan
-          Widget targetPage;
-          if (index == 1) {
-            targetPage = const MenuCatalogScreen();
-          } else if (index == 2) {
-            targetPage = const MyOrderScreen();
+          } else if (currentIndex == 0) {
+            // Dari Beranda membuka halaman baru menggunakan push
+            if (index == 1) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MenuCatalogScreen()),
+              );
+            } else if (index == 2) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const MyOrderScreen()),
+              );
+            } else if (index == 3) {
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              );
+            }
           } else {
-            targetPage = const ProfileScreen();
-          }
-
-          // C. Buka halaman tujuan
-          if (currentIndex == 0) {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => targetPage));
-          } else {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => targetPage));
+            // Berpindah antar tab halaman menggunakan pushReplacement agar tumpukan rapi
+            if (index == 1) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const MenuCatalogScreen()),
+              );
+            } else if (index == 2) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const MyOrderScreen()),
+              );
+            } else if (index == 3) {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (_) => const ProfileScreen()),
+              );
+            }
           }
         },
       ),
