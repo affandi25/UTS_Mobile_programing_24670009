@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../data/dummy_data.dart';
+import '../main_nav_screen.dart';
 
 
 class MyOrderScreen extends StatelessWidget {
@@ -172,6 +173,7 @@ class MyOrderScreen extends StatelessWidget {
           ),
         ],
       ),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 2),
     );
   }
 

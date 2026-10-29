@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
+import '../main_nav_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
   final VoidCallback? onBack;
@@ -208,6 +209,7 @@ class ProfileScreen extends StatelessWidget {
           ),
         ),
       ),
+      bottomNavigationBar: const AppBottomNavBar(currentIndex: 3),
     );
   }
 }
