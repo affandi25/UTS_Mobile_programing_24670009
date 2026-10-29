@@ -64,9 +64,9 @@ class AppBottomNavBar extends StatelessWidget {
         onTap: (index) {
           if (index == currentIndex) return;
 
-          // 1. Jika klik Beranda, langsung kembali pakai pop
+          // 1. Jika klik ikon Beranda di bawah, langsung kembali ke Beranda utama
           if (index == 0) {
-            Navigator.pop(context);
+            Navigator.popUntil(context, (route) => route.isFirst);
             return;
           }
 
@@ -80,12 +80,8 @@ class AppBottomNavBar extends StatelessWidget {
             halamanTujuan = const ProfileScreen();
           }
 
-          // 3. Buka halaman tujuan
-          if (currentIndex == 0) {
-            Navigator.push(context, MaterialPageRoute(builder: (_) => halamanTujuan));
-          } else {
-            Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => halamanTujuan));
-          }
+          // 3. Buka halaman tujuan dengan push (menumpuk riwayat sesuai konsep LIFO)
+          Navigator.push(context, MaterialPageRoute(builder: (_) => halamanTujuan));
         },
       ),
     );
