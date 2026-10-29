@@ -54,10 +54,43 @@ class HomeScreen extends StatelessWidget {
                   ),
                   Row(
                     children: [
-                      _buildHeaderCircleIcon(Icons.notifications_none_rounded),
+                      // Ikon Notifikasi
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0x10000000),
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.notifications_none_rounded, color: AppColors.textDark, size: 20),
+                      ),
                       const SizedBox(width: 8),
-                      _buildHeaderCircleIcon(Icons.chat_bubble_outline_rounded),
+
+                      // Ikon Chat
+                      Container(
+                        padding: const EdgeInsets.all(8),
+                        decoration: const BoxDecoration(
+                          color: Colors.white,
+                          shape: BoxShape.circle,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Color(0x10000000),
+                              blurRadius: 6,
+                              offset: Offset(0, 2),
+                            ),
+                          ],
+                        ),
+                        child: const Icon(Icons.chat_bubble_outline_rounded, color: AppColors.textDark, size: 20),
+                      ),
                       const SizedBox(width: 8),
+
+                      // Ikon Pengaturan / Profil
                       GestureDetector(
                         onTap: () {
                           Navigator.push(
@@ -65,7 +98,21 @@ class HomeScreen extends StatelessWidget {
                             MaterialPageRoute(builder: (_) => const ProfileScreen()),
                           );
                         },
-                        child: _buildHeaderCircleIcon(Icons.settings_outlined),
+                        child: Container(
+                          padding: const EdgeInsets.all(8),
+                          decoration: const BoxDecoration(
+                            color: Colors.white,
+                            shape: BoxShape.circle,
+                            boxShadow: [
+                              BoxShadow(
+                                color: Color(0x10000000),
+                                blurRadius: 6,
+                                offset: Offset(0, 2),
+                              ),
+                            ],
+                          ),
+                          child: const Icon(Icons.settings_outlined, color: AppColors.textDark, size: 20),
+                        ),
                       ),
                     ],
                   ),
@@ -128,12 +175,45 @@ class HomeScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceAround,
                   children: [
-                    _buildQuickActionItem(
-                      icon: Icons.location_on_outlined,
-                      label: 'Lokasi',
-                      color: const Color(0xFFD19025),
+                    // A. Menu Lokasi
+                    const Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(Icons.location_on_outlined, size: 28, color: Color(0xFFD19025)),
+                        SizedBox(height: 4),
+                        Text(
+                          'Lokasi',
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted),
+                        ),
+                      ],
                     ),
-                    _buildQuickActionPercent(),
+
+                    // B. Menu Promo %
+                    Column(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Container(
+                          width: 30,
+                          height: 30,
+                          alignment: Alignment.center,
+                          decoration: BoxDecoration(
+                            color: AppColors.primaryGold.withValues(alpha: 0.15),
+                            shape: BoxShape.circle,
+                          ),
+                          child: const Text(
+                            '%',
+                            style: TextStyle(fontSize: 18, fontWeight: FontWeight.w900, color: AppColors.primaryGold),
+                          ),
+                        ),
+                        const SizedBox(height: 4),
+                        const Text(
+                          'Promo',
+                          style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted),
+                        ),
+                      ],
+                    ),
+
+                    // C. Menu Menu
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -143,12 +223,20 @@ class HomeScreen extends StatelessWidget {
                           ),
                         );
                       },
-                      child: _buildQuickActionItem(
-                        icon: Icons.receipt_long_outlined,
-                        label: 'Menu',
-                        color: const Color(0xFF558B2F),
+                      child: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.receipt_long_outlined, size: 28, color: Color(0xFF558B2F)),
+                          SizedBox(height: 4),
+                          Text(
+                            'Menu',
+                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted),
+                          ),
+                        ],
                       ),
                     ),
+
+                    // D. Menu Kirim
                     GestureDetector(
                       onTap: () {
                         Navigator.push(
@@ -158,10 +246,16 @@ class HomeScreen extends StatelessWidget {
                           ),
                         );
                       },
-                      child: _buildQuickActionItem(
-                        icon: Icons.near_me_rounded,
-                        label: 'Kirim',
-                        color: const Color(0xFF1EC5EA),
+                      child: const Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Icon(Icons.near_me_rounded, size: 28, color: Color(0xFF1EC5EA)),
+                          SizedBox(height: 4),
+                          Text(
+                            'Kirim',
+                            style: TextStyle(fontSize: 11, fontWeight: FontWeight.w600, color: AppColors.textMuted),
+                          ),
+                        ],
                       ),
                     ),
                   ],
@@ -358,18 +452,87 @@ class HomeScreen extends StatelessWidget {
               ),
               const SizedBox(height: 24),
 
-              // 3 Menu Donat Best Seller Statis
-              const SingleChildScrollView(
+              // 3 Menu Donat Best Seller (Tiramisu, Coklat, Matcha)
+              SingleChildScrollView(
                 scrollDirection: Axis.horizontal,
-                physics: BouncingScrollPhysics(),
+                physics: const BouncingScrollPhysics(),
                 child: Row(
                   children: [
-                    SizedBox(width: 30),
-                    _BestSellerCard(imagePath: 'asset/bestseller_tiramizu.png'),
-                    SizedBox(width: 40),
-                    _BestSellerCard(imagePath: 'asset/bestseller_coklat.png'),
-                    SizedBox(width: 40),
-                    _BestSellerCard(imagePath: 'asset/bestseller_matcha.png'),
+                    for (final imagePath in [
+                      'asset/bestseller_tiramizu.png',
+                      'asset/bestseller_coklat.png',
+                      'asset/bestseller_matcha.png',
+                    ]) ...[
+                      const SizedBox(width: 30),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (_) => const MenuCatalogScreen(showBackButton: true),
+                            ),
+                          );
+                        },
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            // Foto Donat
+                            Container(
+                              width: 100,
+                              height: 122,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(14),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0x35000000),
+                                    blurRadius: 6,
+                                    offset: Offset(0, 3),
+                                  ),
+                                ],
+                              ),
+                              child: ClipRRect(
+                                borderRadius: BorderRadius.circular(14),
+                                child: Image.asset(imagePath, fit: BoxFit.cover),
+                              ),
+                            ),
+                            const SizedBox(height: 14),
+
+                            // Tombol Ungu "PESAN"
+                            Container(
+                              width: 103,
+                              height: 28,
+                              decoration: BoxDecoration(
+                                color: const Color(0xFF431BC6),
+                                borderRadius: BorderRadius.circular(13),
+                                boxShadow: const [
+                                  BoxShadow(
+                                    color: Color(0x25000000),
+                                    blurRadius: 4,
+                                    offset: Offset(0, 2),
+                                  ),
+                                ],
+                              ),
+                              child: const Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Icon(Icons.shopping_cart_outlined, size: 14, color: Colors.white),
+                                  SizedBox(width: 4),
+                                  Text(
+                                    'PESAN',
+                                    style: TextStyle(
+                                      fontSize: 11,
+                                      fontWeight: FontWeight.bold,
+                                      color: Colors.white,
+                                      letterSpacing: 0.5,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
                   ],
                 ),
               ),
@@ -379,162 +542,6 @@ class HomeScreen extends StatelessWidget {
         ),
       ),
       bottomNavigationBar: const AppBottomNavBar(currentIndex: 0),
-    );
-  }
-
-  // Helper Widget Ikon Bulat Header
-  static Widget _buildHeaderCircleIcon(IconData icon) {
-    return Container(
-      padding: const EdgeInsets.all(8),
-      decoration: const BoxDecoration(
-        color: Colors.white,
-        shape: BoxShape.circle,
-        boxShadow: [
-          BoxShadow(
-            color: Color(0x10000000),
-            blurRadius: 6,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Icon(icon, color: AppColors.textDark, size: 20),
-    );
-  }
-
-  // Helper Widget Menu Aksi Cepat
-  static Widget _buildQuickActionItem({
-    required IconData icon,
-    required String label,
-    required Color color,
-  }) {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Icon(icon, size: 28, color: color),
-        const SizedBox(height: 4),
-        Text(
-          label,
-          style: const TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textMuted,
-          ),
-        ),
-      ],
-    );
-  }
-
-  // Helper Widget Tombol Promo %
-  static Widget _buildQuickActionPercent() {
-    return Column(
-      mainAxisSize: MainAxisSize.min,
-      children: [
-        Container(
-          width: 30,
-          height: 30,
-          alignment: Alignment.center,
-          decoration: BoxDecoration(
-            color: AppColors.primaryGold.withValues(alpha: 0.15),
-            shape: BoxShape.circle,
-          ),
-          child: const Text(
-            '%',
-            style: TextStyle(
-              fontSize: 18,
-              fontWeight: FontWeight.w900,
-              color: AppColors.primaryGold,
-            ),
-          ),
-        ),
-        const SizedBox(height: 4),
-        const Text(
-          'Promo',
-          style: TextStyle(
-            fontSize: 11,
-            fontWeight: FontWeight.w600,
-            color: AppColors.textMuted,
-          ),
-        ),
-      ],
-    );
-  }
-}
-
-// Widget Item Best Seller
-class _BestSellerCard extends StatelessWidget {
-  final String imagePath;
-
-  const _BestSellerCard({required this.imagePath});
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: () {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (_) => const MenuCatalogScreen(showBackButton: true),
-          ),
-        );
-      },
-      child: Column(
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Foto Donat
-          Container(
-            width: 100,
-            height: 122,
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(14),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x35000000),
-                  blurRadius: 6,
-                  offset: Offset(0, 3),
-                ),
-              ],
-            ),
-            child: ClipRRect(
-              borderRadius: BorderRadius.circular(14),
-              child: Image.asset(imagePath, fit: BoxFit.cover),
-            ),
-          ),
-          const SizedBox(height: 14),
-
-          // Tombol Ungu "PESAN"
-          Container(
-            width: 103,
-            height: 28,
-            decoration: BoxDecoration(
-              color: const Color(0xFF431BC6),
-              borderRadius: BorderRadius.circular(13),
-              boxShadow: const [
-                BoxShadow(
-                  color: Color(0x25000000),
-                  blurRadius: 4,
-                  offset: Offset(0, 2),
-                ),
-              ],
-            ),
-            child: const Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                Icon(Icons.shopping_cart_outlined, size: 14, color: Colors.white),
-                SizedBox(width: 4),
-                Text(
-                  'PESAN',
-                  style: TextStyle(
-                    fontSize: 11,
-                    fontWeight: FontWeight.bold,
-                    color: Colors.white,
-                    letterSpacing: 0.5,
-                  ),
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
     );
   }
 }
