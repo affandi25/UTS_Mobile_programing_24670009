@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
+import '../auth/login_screen.dart';
 import '../main_nav_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
@@ -153,19 +154,67 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Column(
+                child: Column(
                   children: [
-                    _ProfileFieldRow(label: 'Nama', value: 'Yusuf Affandi'),
-                    _ProfileDivider(),
-                    _ProfileFieldRow(label: 'Bio', value: 'Pecinta Donat Manis & Dessert'),
-                    _ProfileDivider(),
-                    _ProfileFieldRow(label: 'Jenis Kelamin', value: 'Laki-laki'),
-                    _ProfileDivider(),
-                    _ProfileFieldRow(label: 'Tanggal Lahir', value: '25 Mei 2004'),
-                    _ProfileDivider(),
-                    _ProfileFieldRow(label: 'No.Handphone', value: '081234567890'),
-                    _ProfileDivider(),
-                    _ProfileFieldRow(label: 'Email', value: 'Akusayangkamu@gmail.com'),
+                    for (final field in const [
+                      {'label': 'Nama', 'value': 'Yusuf Affandi'},
+                      {'label': 'Bio', 'value': 'Pecinta Donat Manis & Dessert'},
+                      {'label': 'Jenis Kelamin', 'value': 'Laki-laki'},
+                      {'label': 'Tanggal Lahir', 'value': '25 Mei 2004'},
+                      {'label': 'No.Handphone', 'value': '081234567890'},
+                      {'label': 'Email', 'value': 'Akusayangkamu@gmail.com'},
+                    ]) ...[
+                      Padding(
+                        padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              field['label']!,
+                              style: const TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.black54,
+                              ),
+                            ),
+                            const SizedBox(width: 12),
+                            Expanded(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.end,
+                                children: [
+                                  Flexible(
+                                    child: Text(
+                                      field['value']!,
+                                      textAlign: TextAlign.end,
+                                      overflow: TextOverflow.ellipsis,
+                                      style: const TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w600,
+                                        color: AppColors.textDark,
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(width: 8),
+                                  const Icon(
+                                    Icons.arrow_forward_ios_rounded,
+                                    size: 13,
+                                    color: Colors.black38,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                      if (field['label'] != 'Email')
+                        const Divider(
+                          height: 1,
+                          thickness: 1,
+                          color: Color(0xFFF3F3F3),
+                          indent: 18,
+                          endIndent: 18,
+                        ),
+                    ],
                   ],
                 ),
               ),
@@ -184,22 +233,90 @@ class ProfileScreen extends StatelessWidget {
                     ),
                   ],
                 ),
-                child: const Column(
+                child: Column(
                   children: [
-                    _AccountActionRow(
-                      icon: Icons.lock_reset_rounded,
-                      iconBgColor: Color(0x1FD19025),
-                      iconColor: AppColors.primaryGold,
-                      title: 'Ubah Kata Sandi',
-                      titleColor: AppColors.textDark,
+                    // A. Ubah Kata Sandi
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                      child: Row(
+                        children: [
+                          DecoratedBox(
+                            decoration: BoxDecoration(
+                              color: Color(0x1FD19025),
+                              borderRadius: BorderRadius.all(Radius.circular(10)),
+                            ),
+                            child: Padding(
+                              padding: EdgeInsets.all(8),
+                              child: Icon(Icons.lock_reset_rounded, color: AppColors.primaryGold, size: 20),
+                            ),
+                          ),
+                          SizedBox(width: 14),
+                          Text(
+                            'Ubah Kata Sandi',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w600,
+                              color: AppColors.textDark,
+                            ),
+                          ),
+                          Spacer(),
+                          Icon(
+                            Icons.arrow_forward_ios_rounded,
+                            size: 14,
+                            color: Colors.black38,
+                          ),
+                        ],
+                      ),
                     ),
-                    _ProfileDivider(),
-                    _AccountActionRow(
-                      icon: Icons.logout_rounded,
-                      iconBgColor: Color(0x1FE53935),
-                      iconColor: Colors.redAccent,
-                      title: 'Keluar',
-                      titleColor: Colors.redAccent,
+                    const Divider(
+                      height: 1,
+                      thickness: 1,
+                      color: Color(0xFFF3F3F3),
+                      indent: 18,
+                      endIndent: 18,
+                    ),
+
+                    // B. Keluar (Logout - Kembali ke Login)
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.pushAndRemoveUntil(
+                          context,
+                          MaterialPageRoute(builder: (_) => const LoginScreen()),
+                          (route) => false,
+                        );
+                      },
+                      child: const Padding(
+                        padding: EdgeInsets.symmetric(horizontal: 18, vertical: 12),
+                        child: Row(
+                          children: [
+                            DecoratedBox(
+                              decoration: BoxDecoration(
+                                color: Color(0x1FE53935),
+                                borderRadius: BorderRadius.all(Radius.circular(10)),
+                              ),
+                              child: Padding(
+                                padding: EdgeInsets.all(8),
+                                child: Icon(Icons.logout_rounded, color: Colors.redAccent, size: 20),
+                              ),
+                            ),
+                            SizedBox(width: 14),
+                            Text(
+                              'Keluar',
+                              style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w600,
+                                color: Colors.redAccent,
+                              ),
+                            ),
+                            Spacer(),
+                            Icon(
+                              Icons.arrow_forward_ios_rounded,
+                              size: 14,
+                              color: Colors.black38,
+                            ),
+                          ],
+                        ),
+                      ),
                     ),
                   ],
                 ),
@@ -214,123 +331,3 @@ class ProfileScreen extends StatelessWidget {
   }
 }
 
-// Widget Baris Field Data Profil
-class _ProfileFieldRow extends StatelessWidget {
-  final String label;
-  final String value;
-
-  const _ProfileFieldRow({required this.label, required this.value});
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 14),
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-        children: [
-          Text(
-            label,
-            style: const TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: Colors.black54,
-            ),
-          ),
-          const SizedBox(width: 12),
-          Expanded(
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.end,
-              children: [
-                Flexible(
-                  child: Text(
-                    value,
-                    textAlign: TextAlign.end,
-                    overflow: TextOverflow.ellipsis,
-                    style: const TextStyle(
-                      fontSize: 14,
-                      fontWeight: FontWeight.w600,
-                      color: AppColors.textDark,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8),
-                const Icon(
-                  Icons.arrow_forward_ios_rounded,
-                  size: 13,
-                  color: Colors.black38,
-                ),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Widget Baris Aksi Akun (Ubah Sandi / Keluar)
-class _AccountActionRow extends StatelessWidget {
-  final IconData icon;
-  final Color iconBgColor;
-  final Color iconColor;
-  final String title;
-  final Color titleColor;
-
-  const _AccountActionRow({
-    required this.icon,
-    required this.iconBgColor,
-    required this.iconColor,
-    required this.title,
-    required this.titleColor,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 18, vertical: 12),
-      child: Row(
-        children: [
-          Container(
-            padding: const EdgeInsets.all(8),
-            decoration: BoxDecoration(
-              color: iconBgColor,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Icon(icon, color: iconColor, size: 20),
-          ),
-          const SizedBox(width: 14),
-          Text(
-            title,
-            style: TextStyle(
-              fontSize: 14,
-              fontWeight: FontWeight.w600,
-              color: titleColor,
-            ),
-          ),
-          const Spacer(),
-          const Icon(
-            Icons.arrow_forward_ios_rounded,
-            size: 14,
-            color: Colors.black38,
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-// Widget Garis Pemisah (Divider)
-class _ProfileDivider extends StatelessWidget {
-  const _ProfileDivider();
-
-  @override
-  Widget build(BuildContext context) {
-    return const Divider(
-      height: 1,
-      thickness: 1,
-      color: Color(0xFFF3F3F3),
-      indent: 18,
-      endIndent: 18,
-    );
-  }
-}
