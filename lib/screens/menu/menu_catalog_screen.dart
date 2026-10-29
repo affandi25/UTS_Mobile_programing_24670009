@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../data/dummy_data.dart';
-import '../bottom_nav_bar.dart';
 
 
 
@@ -175,7 +174,6 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
             ),
           ],
         ),
-        bottomNavigationBar: const AppBottomNavBar(currentIndex: 1),
       );
     }
 }
