@@ -211,7 +211,7 @@ class HomeScreen extends StatelessWidget {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (_) => const MenuCatalogScreen(showBackButton: true),
+                            builder: (_) => const MenuCatalogScreen(),
                           ),
                         );
                       },
@@ -316,7 +316,7 @@ class HomeScreen extends StatelessWidget {
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (_) => const MenuCatalogScreen(showBackButton: true),
+                                    builder: (_) => const MenuCatalogScreen(),
                                   ),
                                 );
                               },
@@ -427,7 +427,7 @@ class HomeScreen extends StatelessWidget {
                       Navigator.push(
                         context,
                         MaterialPageRoute(
-                          builder: (_) => const MenuCatalogScreen(showBackButton: true),
+                          builder: (_) => const MenuCatalogScreen(),
                         ),
                       );
                     },
@@ -461,7 +461,7 @@ class HomeScreen extends StatelessWidget {
                           Navigator.push(
                             context,
                             MaterialPageRoute(
-                              builder: (_) => const MenuCatalogScreen(showBackButton: true),
+                              builder: (_) => const MenuCatalogScreen(),
                             ),
                           );
                         },
