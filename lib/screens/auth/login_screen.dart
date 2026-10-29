@@ -143,14 +143,64 @@ class LoginScreen extends StatelessWidget {
               const SizedBox(height: 16),
 
               // 7. Tombol Sosial (Google, Apple, Facebook)
-              const Row(
+              Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _SocialButton(icon: Icons.g_mobiledata_rounded, color: Colors.red),
-                  SizedBox(width: 16),
-                  _SocialButton(icon: Icons.apple, color: Colors.black),
-                  SizedBox(width: 16),
-                  _SocialButton(icon: Icons.facebook, color: Colors.blue),
+                  // Google
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: AppColors.grayInput,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x10000000),
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.g_mobiledata_rounded, color: Colors.red, size: 28),
+                  ),
+                  const SizedBox(width: 16),
+
+                  // Apple
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: AppColors.grayInput,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x10000000),
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.apple, color: Colors.black, size: 28),
+                  ),
+                  const SizedBox(width: 16),
+
+                  // Facebook
+                  Container(
+                    width: 48,
+                    height: 48,
+                    decoration: BoxDecoration(
+                      color: AppColors.grayInput,
+                      borderRadius: BorderRadius.circular(10),
+                      boxShadow: const [
+                        BoxShadow(
+                          color: Color(0x10000000),
+                          blurRadius: 4,
+                          offset: Offset(0, 2),
+                        ),
+                      ],
+                    ),
+                    child: const Icon(Icons.facebook, color: Colors.blue, size: 28),
+                  ),
                 ],
               ),
               const SizedBox(height: 48),
@@ -186,34 +236,6 @@ class LoginScreen extends StatelessWidget {
           ),
         ),
       ),
-    );
-  }
-}
-
-// Widget Tombol Sosial Bulat / Kotak Rounded
-class _SocialButton extends StatelessWidget {
-  final IconData icon;
-  final Color color;
-
-  const _SocialButton({required this.icon, required this.color});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      width: 48,
-      height: 48,
-      decoration: BoxDecoration(
-        color: AppColors.grayInput,
-        borderRadius: BorderRadius.circular(10),
-        boxShadow: const [
-          BoxShadow(
-            color: Color(0x10000000),
-            blurRadius: 4,
-            offset: Offset(0, 2),
-          ),
-        ],
-      ),
-      child: Icon(icon, color: color, size: 28),
     );
   }
 }
