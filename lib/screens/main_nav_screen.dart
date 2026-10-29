@@ -14,53 +14,11 @@ class MainNavigationScreen extends StatefulWidget {
 
 class _MainNavigationScreenState extends State<MainNavigationScreen> {
   int _currentIndex = 0;
-  String _catalogSearchQuery = '';
 
   @override
   Widget build(BuildContext context) {
-    final screens = [
-      HomeScreen(
-        onSelectTab: (index) {
-          setState(() {
-            _currentIndex = index;
-            if (index != 1) _catalogSearchQuery = '';
-          });
-        },
-        onSearchCatalog: (query) {
-          setState(() {
-            _catalogSearchQuery = query;
-            _currentIndex = 1;
-          });
-        },
-      ),
-      MenuCatalogScreen(
-        key: ValueKey('catalog_$_catalogSearchQuery'),
-        initialQuery: _catalogSearchQuery,
-        onBack: () {
-          setState(() {
-            _currentIndex = 0;
-            _catalogSearchQuery = '';
-          });
-        },
-      ),
-      MyOrderScreen(
-        onBack: () {
-          setState(() {
-            _currentIndex = 0;
-          });
-        },
-      ),
-      ProfileScreen(
-        onBack: () {
-          setState(() {
-            _currentIndex = 0;
-          });
-        },
-      ),
-    ];
-
     return Scaffold(
-      body: screens[_currentIndex],
+      body: const HomeScreen(),
       bottomNavigationBar: Container(
         decoration: const BoxDecoration(
           color: Colors.white,
