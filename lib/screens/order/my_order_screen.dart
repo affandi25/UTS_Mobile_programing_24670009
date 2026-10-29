@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../data/dummy_data.dart';
+import '../home/home_screen.dart';
 import '../main_nav_screen.dart';
 
 
@@ -45,8 +46,13 @@ class MyOrderScreen extends StatelessWidget {
                     onTap: () {
                       if (onBack != null) {
                         onBack!();
-                      } else {
+                      } else if (Navigator.canPop(context)) {
                         Navigator.pop(context);
+                      } else {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(builder: (_) => const HomeScreen()),
+                        );
                       }
                     },
                     child: Container(

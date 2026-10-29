@@ -66,7 +66,11 @@ class AppBottomNavBar extends StatelessWidget {
 
           if (index == 0) {
             // Kembali ke Beranda
-            Navigator.popUntil(context, (route) => route.isFirst);
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (_) => const HomeScreen()),
+              (route) => false,
+            );
           } else if (currentIndex == 0) {
             // Dari Beranda membuka halaman baru menggunakan push
             if (index == 1) {

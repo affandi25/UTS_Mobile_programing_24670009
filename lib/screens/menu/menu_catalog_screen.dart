@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../data/dummy_data.dart';
+import '../home/home_screen.dart';
 import '../main_nav_screen.dart';
 import '../order/my_order_screen.dart';
 
@@ -96,6 +97,11 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
                                 widget.onBack!();
                               } else if (Navigator.canPop(context)) {
                                 Navigator.pop(context);
+                              } else {
+                                Navigator.pushReplacement(
+                                  context,
+                                  MaterialPageRoute(builder: (_) => const HomeScreen()),
+                                );
                               }
                             },
                           )

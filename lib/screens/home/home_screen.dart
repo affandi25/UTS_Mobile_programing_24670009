@@ -121,16 +121,8 @@ class HomeScreen extends StatelessWidget {
               const SizedBox(height: 28),
 
               // 2. Search Bar
-              GestureDetector(
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => const MenuCatalogScreen(showBackButton: true),
-                    ),
-                  );
-                },
-                child: Container(
+              
+                Container(
                   padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 14),
                   decoration: BoxDecoration(
                     color: AppColors.grayInput.withValues(alpha: 0.6),
@@ -154,7 +146,7 @@ class HomeScreen extends StatelessWidget {
                     ],
                   ),
                 ),
-              ),
+              
               const SizedBox(height: 26),
 
               // 3. Row 4 Menu Aksi Cepat (Lokasi, Promo %, Menu, Kirim)
