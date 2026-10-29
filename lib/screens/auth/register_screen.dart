@@ -91,19 +91,41 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 28),
 
               // Form Nama
-              _buildInputField(
-                controller: _nameController,
-                hint: 'NAMA LENGKAP',
-                icon: Icons.person_outline,
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.grayInput,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  controller: _nameController,
+                  decoration: const InputDecoration(
+                    hintText: 'NAMA LENGKAP',
+                    hintStyle: TextStyle(fontSize: 13, color: Colors.black54),
+                    prefixIcon: Icon(Icons.person_outline, color: Colors.black54),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
 
               // Form Email
-              _buildInputField(
-                controller: _emailController,
-                hint: 'EMAIL',
-                icon: Icons.email_outlined,
-                keyboardType: TextInputType.emailAddress,
+              Container(
+                decoration: BoxDecoration(
+                  color: AppColors.grayInput,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                child: TextField(
+                  controller: _emailController,
+                  keyboardType: TextInputType.emailAddress,
+                  decoration: const InputDecoration(
+                    hintText: 'EMAIL',
+                    hintStyle: TextStyle(fontSize: 13, color: Colors.black54),
+                    prefixIcon: Icon(Icons.email_outlined, color: Colors.black54),
+                    border: InputBorder.none,
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                  ),
+                ),
               ),
               const SizedBox(height: 16),
 
@@ -164,7 +186,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               const SizedBox(height: 24),
 
               // Kembali ke Login
-            
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -184,31 +205,6 @@ class _RegisterScreenState extends State<RegisterScreen> {
               ),
             ],
           ),
-        ),
-      ),
-    );
-  }
-
-  Widget _buildInputField({
-    required TextEditingController controller,
-    required String hint,
-    required IconData icon,
-    TextInputType keyboardType = TextInputType.text,
-  }) {
-    return Container(
-      decoration: BoxDecoration(
-        color: AppColors.grayInput,
-        borderRadius: BorderRadius.circular(10),
-      ),
-      child: TextField(
-        controller: controller,
-        keyboardType: keyboardType,
-        decoration: InputDecoration(
-          hintText: hint,
-          hintStyle: const TextStyle(fontSize: 13, color: Colors.black54),
-          prefixIcon: Icon(icon, color: Colors.black54),
-          border: InputBorder.none,
-          contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
         ),
       ),
     );
