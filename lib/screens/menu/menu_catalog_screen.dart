@@ -273,14 +273,9 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
                                     const SizedBox(height: 10),
 
                                     // Tombol Ungu "PESAN" (Navigasi ke Halaman Pesanan)
-                                    GestureDetector(
-                                      onTap: () {
-                                        Navigator.push(
-                                          context,
-                                          MaterialPageRoute(builder: (_) => const MyOrderScreen()),
-                                        );
-                                      },
-                                      child: Container(
+                                    
+                                     
+                                      Container(
                                         width: 125,
                                         height: 32,
                                         alignment: Alignment.center,
@@ -297,7 +292,7 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
                                           ),
                                         ),
                                       ),
-                                    ),
+                                    
                                   ],
                                 ),
                               ),
