@@ -45,7 +45,7 @@ class MyOrderScreen extends StatelessWidget {
                       if (onBack != null) {
                         onBack!();
                       } else {
-                        Navigator.maybePop(context);
+                        Navigator.pop(context);
                       }
                     },
                     child: Container(

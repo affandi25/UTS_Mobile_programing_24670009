@@ -1,53 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
-import '../../core/app_text_styles.dart';
 import '../main_nav_screen.dart';
 import 'register_screen.dart';
 
-class LoginScreen extends StatefulWidget {
+class LoginScreen extends StatelessWidget {
   const LoginScreen({super.key});
-
-  @override
-  State<LoginScreen> createState() => _LoginScreenState();
-}
-
-class _LoginScreenState extends State<LoginScreen> {
-  final TextEditingController _usernameController = TextEditingController(text: 'Akusayangkamu@gmail.com');
-  final TextEditingController _passwordController = TextEditingController(text: '12345678');
-  bool _obscurePassword = true;
-
-  @override
-  void dispose() {
-    _usernameController.dispose();
-    _passwordController.dispose();
-    super.dispose();
-  }
-
-  void _handleLogin() {
-    final email = _usernameController.text.trim();
-    final password = _passwordController.text.trim();
-
-    if (email.isEmpty || password.isEmpty) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Email dan Password tidak boleh kosong!')),
-      );
-      return;
-    }
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        backgroundColor: AppColors.successGreen,
-        content: Text('Login berhasil! Selamat datang, Yusuf Affandi'),
-        duration: Duration(seconds: 1),
-      ),
-    );
-
-    Navigator.pushAndRemoveUntil(
-      context,
-      MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
-      (route) => false,
-    );
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -61,15 +18,14 @@ class _LoginScreenState extends State<LoginScreen> {
             children: [
               const SizedBox(height: 16),
 
-              // Logo Bundar Sesuai Figma
+              // 1. Logo Donat Bundar
               const CircleAvatar(
-                  radius: 80,
-                  backgroundImage: AssetImage('asset/onboarding_donut.png'),
-                ),
-
+                radius: 80,
+                backgroundImage: AssetImage('asset/onboarding_donut.png'),
+              ),
               const SizedBox(height: 16),
 
-              // Judul Login
+              // 2. Judul "Login"
               const Text(
                 'Login',
                 style: TextStyle(
@@ -81,7 +37,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 32),
 
-              // Form Username / Email
+              // 3. Form Input Username
               Container(
                 decoration: BoxDecoration(
                   color: AppColors.grayInput,
@@ -94,9 +50,8 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                child: TextField(
-                  controller: _usernameController,
-                  decoration: const InputDecoration(
+                child: const TextField(
+                  decoration: InputDecoration(
                     hintText: 'USERNAME',
                     hintStyle: TextStyle(fontSize: 13, color: Colors.black54),
                     prefixIcon: Icon(Icons.person_outline, color: Colors.black54),
@@ -107,7 +62,7 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 18),
 
-              // Form Password
+              // 4. Form Input Password
               Container(
                 decoration: BoxDecoration(
                   color: AppColors.grayInput,
@@ -120,43 +75,42 @@ class _LoginScreenState extends State<LoginScreen> {
                     ),
                   ],
                 ),
-                child: TextField(
-                  controller: _passwordController,
-                  obscureText: _obscurePassword,
+                child: const TextField(
+                  obscureText: true,
                   decoration: InputDecoration(
                     hintText: 'PASSWORD',
-                    hintStyle: const TextStyle(fontSize: 13, color: Colors.black54),
-                    prefixIcon: const Icon(Icons.lock_outline, color: Colors.black54),
-                    suffixIcon: IconButton(
-                      icon: Icon(
-                        _obscurePassword ? Icons.visibility_off : Icons.visibility,
-                        color: Colors.black54,
-                      ),
-                      onPressed: () {
-                        setState(() {
-                          _obscurePassword = !_obscurePassword;
-                        });
-                      },
-                    ),
+                    hintStyle: TextStyle(fontSize: 13, color: Colors.black54),
+                    prefixIcon: Icon(Icons.lock_outline, color: Colors.black54),
+                    suffixIcon: Icon(Icons.visibility_off, color: Colors.black54),
                     border: InputBorder.none,
-                    contentPadding: const EdgeInsets.symmetric(horizontal: 16, vertical: 14),
+                    contentPadding: EdgeInsets.symmetric(horizontal: 16, vertical: 14),
                   ),
                 ),
               ),
               const SizedBox(height: 28),
 
-              // Tombol Submit (Navy #2A5EB0 Sesuai Figma #72:403)
-              SizedBox(
-                width: double.infinity,
-                height: 48,
-                child: ElevatedButton(
-                  onPressed: _handleLogin,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: AppColors.navyButton,
-                    elevation: 3,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(10),
-                    ),
+              // 5. Tombol Submit (Navy #2A5EB0)
+              GestureDetector(
+                onTap: () {
+                  Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(builder: (_) => const MainNavigationScreen()),
+                  );
+                },
+                child: Container(
+                  width: double.infinity,
+                  height: 48,
+                  alignment: Alignment.center,
+                  decoration: BoxDecoration(
+                    color: AppColors.navyButton,
+                    borderRadius: BorderRadius.circular(10),
+                    boxShadow: const [
+                      BoxShadow(
+                        color: Color(0x252A5EB0),
+                        blurRadius: 6,
+                        offset: Offset(0, 3),
+                      ),
+                    ],
                   ),
                   child: const Text(
                     'Submit',
@@ -170,27 +124,30 @@ class _LoginScreenState extends State<LoginScreen> {
               ),
               const SizedBox(height: 36),
 
-              // Opsi "Login melalui"
-              Text(
+              // 6. Label "Login melalui"
+              const Text(
                 'Login melalui',
-                style: AppTextStyles.caption.copyWith(fontSize: 13),
+                style: TextStyle(
+                  fontSize: 13,
+                  color: AppColors.textMuted,
+                ),
               ),
               const SizedBox(height: 16),
 
-              // Tombol Login Sosial
-              Row(
+              // 7. Tombol Sosial (Google, Apple, Facebook)
+              const Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  _socialButton(icon: Icons.g_mobiledata_rounded, color: Colors.red, label: 'Google'),
-                  const SizedBox(width: 16),
-                  _socialButton(icon: Icons.apple, color: Colors.black, label: 'Apple'),
-                  const SizedBox(width: 16),
-                  _socialButton(icon: Icons.facebook, color: Colors.blue, label: 'Facebook'),
+                  _SocialButton(icon: Icons.g_mobiledata_rounded, color: Colors.red),
+                  SizedBox(width: 16),
+                  _SocialButton(icon: Icons.apple, color: Colors.black),
+                  SizedBox(width: 16),
+                  _SocialButton(icon: Icons.facebook, color: Colors.blue),
                 ],
               ),
               const SizedBox(height: 48),
 
-              // Footer Register Link
+              // 8. Footer Link Register
               Row(
                 mainAxisAlignment: MainAxisAlignment.center,
                 children: [
@@ -223,8 +180,17 @@ class _LoginScreenState extends State<LoginScreen> {
       ),
     );
   }
+}
 
-  Widget _socialButton({required IconData icon, required Color color, required String label}) {
+// Widget Tombol Sosial Bulat / Kotak Rounded
+class _SocialButton extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+
+  const _SocialButton({required this.icon, required this.color});
+
+  @override
+  Widget build(BuildContext context) {
     return Container(
       width: 48,
       height: 48,

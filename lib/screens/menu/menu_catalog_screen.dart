@@ -292,25 +292,21 @@ class CatalogItemCard extends StatelessWidget {
                   const SizedBox(height: 10),
 
                   // Tombol Ungu "PESAN"
-                  SizedBox(
-                    width: 125,
-                    height: 32,
-                    child: ElevatedButton(
-                      onPressed: onPesan ?? onTap,
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFF431BC6),
-                        elevation: 2,
-                        padding: EdgeInsets.zero,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(12),
-                        ),
+                  GestureDetector(
+                    onTap: onPesan ?? onTap,
+                    child: Container(
+                      width: 125,
+                      height: 32,
+                      alignment: Alignment.center,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFF431BC6), // Bebas atur warna di sini
+                        borderRadius: BorderRadius.circular(12),
                       ),
                       child: const Text(
                         'PESAN',
                         style: TextStyle(
                           fontSize: 12,
                           fontWeight: FontWeight.bold,
-                          letterSpacing: 0.8,
                           color: Colors.white,
                         ),
                       ),
