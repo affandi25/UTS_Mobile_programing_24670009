@@ -1,13 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../auth/login_screen.dart';
-import '../home/home_screen.dart';
 import '../main_nav_screen.dart';
 
 class ProfileScreen extends StatelessWidget {
-  final VoidCallback? onBack;
-
-  const ProfileScreen({super.key, this.onBack});
+  const ProfileScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -23,18 +20,7 @@ class ProfileScreen extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   GestureDetector(
-                    onTap: () {
-                      if (onBack != null) {
-                        onBack!();
-                      } else if (Navigator.canPop(context)) {
-                        Navigator.pop(context);
-                      } else {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => const HomeScreen()),
-                        );
-                      }
-                    },
+                    onTap: () => Navigator.pop(context),
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: const BoxDecoration(

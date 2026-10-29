@@ -1,14 +1,10 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../data/dummy_data.dart';
-import '../home/home_screen.dart';
 import '../main_nav_screen.dart';
 
-
 class MyOrderScreen extends StatelessWidget {
-  final VoidCallback? onBack;
-
-  const MyOrderScreen({super.key, this.onBack});
+  const MyOrderScreen({super.key});
 
   @override
   Widget build(BuildContext context) {
@@ -41,20 +37,9 @@ class MyOrderScreen extends StatelessWidget {
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                  // A. Tombol Panah Kembali (Kembali ke Beranda) Sesuai Figma (#125:2644)
+                  // A. Tombol Panah Kembali Sesuai Figma (#125:2644)
                   GestureDetector(
-                    onTap: () {
-                      if (onBack != null) {
-                        onBack!();
-                      } else if (Navigator.canPop(context)) {
-                        Navigator.pop(context);
-                      } else {
-                        Navigator.pushReplacement(
-                          context,
-                          MaterialPageRoute(builder: (_) => const HomeScreen()),
-                        );
-                      }
-                    },
+                    onTap: () => Navigator.pop(context),
                     child: Container(
                       padding: const EdgeInsets.all(8),
                       decoration: const BoxDecoration(

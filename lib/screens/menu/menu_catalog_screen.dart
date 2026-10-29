@@ -1,21 +1,16 @@
 import 'package:flutter/material.dart';
 import '../../core/app_colors.dart';
 import '../../data/dummy_data.dart';
-import '../home/home_screen.dart';
 import '../main_nav_screen.dart';
 import '../order/my_order_screen.dart';
 
-
-
 class MenuCatalogScreen extends StatefulWidget {
   final bool showBackButton;
-  final VoidCallback? onBack;
   final String? initialQuery;
 
   const MenuCatalogScreen({
     super.key,
-    this.showBackButton = false,
-    this.onBack,
+    this.showBackButton = true,
     this.initialQuery,
   });
 
@@ -89,24 +84,10 @@ class _MenuCatalogScreenState extends State<MenuCatalogScreen> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
-                        if (widget.showBackButton || widget.onBack != null || Navigator.canPop(context))
-                          IconButton(
-                            icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 22),
-                            onPressed: () {
-                              if (widget.onBack != null) {
-                                widget.onBack!();
-                              } else if (Navigator.canPop(context)) {
-                                Navigator.pop(context);
-                              } else {
-                                Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(builder: (_) => const HomeScreen()),
-                                );
-                              }
-                            },
-                          )
-                        else
-                          const SizedBox(width: 40),
+                        IconButton(
+                          icon: const Icon(Icons.arrow_back_ios_new, color: Colors.white, size: 22),
+                          onPressed: () => Navigator.pop(context),
+                        ),
                         const Text(
                           'Varian Rasa',
                           style: TextStyle(
